@@ -1,0 +1,111 @@
+#!/home/gmap/mrpm/marguina/install/perl-5.32.0/bin/perl -w
+#
+
+use FileHandle;
+use Data::Dumper;
+use FindBin qw ($Bin);
+use lib $Bin;
+use Fxtran;
+
+use strict;
+
+sub slurp
+{
+  my $f = shift;
+  do { local $/ = undef; my $fh = 'FileHandle'->new ("<$f"); <$fh> };
+}
+
+my %deps;
+
+sub deps
+{
+  my $f = shift;
+
+  unless ($deps{$f})
+    {
+      my $code = &slurp ($f);
+      my @inc = ($code =~ m/\n\s*#include\s+"(.*?)"/goms);
+      my @use = ($code =~ m/\n\s*use\s+(\w+)/gomis);
+      my @mod = map { lc ($_) . '.mod' } @use;
+      $deps{$f} = [@mod, @inc];
+   }
+
+  return @{ $deps{$f} };
+}
+
+sub kind
+{
+  my $f = shift;
+  my $code = &slurp ($f);
+  my ($kind) = ($code =~ m/^(PROGRAM|SUBROUTINE|MODULE)/goms);
+  return $kind;
+}
+
+my $fh = 'FileHandle'->new (">Makefile");
+
+$fh->print (<< "EOF");
+include Makefile.inc
+
+EOF
+
+my (@obj, @prg);
+
+
+for my $F90 (<*.F90>)
+  {
+    my $kind = &kind ($F90);
+    if ($kind eq 'SUBROUTINE')
+      {
+        my $intfb = &Fxtran::intfb ($F90);
+        (my $ok = $intfb) =~ s/\.h$/.ok/o;
+        my @deps = &deps ($intfb);
+        $fh->print (<< "EOF");
+$ok: $intfb @deps
+	touch $ok
+
+EOF
+      }
+    elsif ($kind eq 'PROGRAM')
+      {
+        push @prg, $F90;
+      }
+    elsif ($kind eq 'MODULE')
+      {
+        (my $mod = $F90) =~ s/\.F90$/.mod/o;
+        (my $obj = $F90) =~ s/\.F90$/.o/o;
+        $fh->print (<< "EOF");
+$mod: $obj
+
+EOF
+      }
+  }
+
+for my $F90 (<*.F90>)
+  {
+    my @deps = &deps ($F90);
+    for (@deps)
+      {
+        s/\.h$/.ok/o;
+      }
+    (my $obj = $F90) =~ s/\.F90$/.o/o;
+    $fh->print (<< "EOF");
+$obj: $F90 @deps
+	\$(FC) -c $F90
+
+EOF
+    my $kind = &kind ($F90);
+    
+    push @obj, $obj if ($kind ne 'PROGRAM');
+  }
+
+for my $prg (@prg)
+  {
+    (my $exe = $prg) =~ s/\.F90$/.x/o;
+    (my $obj = $prg) =~ s/\.F90$/.o/o;
+    $fh->print (<< "EOF");
+$exe: $obj @obj
+	\$(FC) -o $exe $obj @obj
+
+EOF
+  }
+

@@ -1,0 +1,8 @@
+*.o
+*.a
+*.x
+*.mod
+*.optrpt
+*.xml
+*.intfb.h
+*.ok
