@@ -109,3 +109,9 @@ $exe: $obj @obj
 EOF
   }
 
+$fh->print (<< "EOF");
+
+clean:
+	\\rm -f *.o *.xml *.a *.x *.mod
+EOF
+
