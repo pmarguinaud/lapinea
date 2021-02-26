@@ -9,7 +9,7 @@ my @code = do { my $fh = 'FileHandle'->new ("<$F90"); <$fh> };
 
 for my $code (@code)
   {
-    if ($code =~ m/READ/o)
+    if (($code =~ m/READ|CALL LOAD/o) && ! ($code =~ m/WRITE/o))
       {
         chomp ($code);
         $code = "$code ; WRITE (0, *) __FILE__, ':', __LINE__, \"$code\"\n";
