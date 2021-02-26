@@ -50,6 +50,7 @@ for my $pu (@pu)
 
     {
       my $st = $stmt->cloneNode (1);
+die if ($st->textContent =~ m/JPIM/o);
       my ($spec) = &f ('./f:_T-spec_/f:intrinsic-T-spec/f:T-N/text ()', $st);
       $spec->replaceNode (&t ('REAL   '));
       my ($intent) = &f ('./f:attribute/f:intent-spec/text ()', $st);
