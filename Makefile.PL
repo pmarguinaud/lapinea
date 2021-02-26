@@ -128,6 +128,9 @@ subclean:
 	\\rm -f @subobj
 
 clean:
-	\\rm -f *.o *.xml *.a *.x *.mod
+	\\rm -f *.o *.xml *.a *.x *.mod *.optrpt
+
+tidy:
+	\\rm -f *.xml *.optrpt
 EOF
 

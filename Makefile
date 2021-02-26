@@ -608,4 +608,7 @@ subclean:
 	\rm -f abor1.o elarche.o elarmes.o elascaw.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o wrap_lapinea.o
 
 clean:
-	\rm -f *.o *.xml *.a *.x *.mod
+	\rm -f *.o *.xml *.a *.x *.mod *.optrpt
+
+tidy:
+	\rm -f *.xml *.optrpt
