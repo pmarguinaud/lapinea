@@ -1,4 +1,5 @@
 !option! -O extendreorder
+!$acc routine(ELASCAW) seq
 SUBROUTINE ELASCAW(&
  ! --- INPUT -------------------------------------------------
  & YDVSPLIP,LDSLHDHEAT,YDSL,KPROMB,KDIMK,KST,KPROF,KFLEV,&

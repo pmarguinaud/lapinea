@@ -1,6 +1,7 @@
 #ifdef RS6K
 @PROCESS NOCHECK
 #endif
+!$acc routine(LAPINEA) seq
 SUBROUTINE LAPINEA(&
  ! --- INPUT ------------------------------------------------------------------
  & YDGEOMETRY, YDML_GCONF,YDML_DYN,KST,KPROF,YDSL,KIBL,PB1,PB2,&

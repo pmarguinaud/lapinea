@@ -1,6 +1,7 @@
 #ifdef RS6K
 @PROCESS NOCHECK
 #endif
+!$acc routine(LARCINA) seq
 SUBROUTINE LARCINA(&
  ! --- INPUT ---------------------------------------------------------
  & YDGEOMETRY, YDML_DYN,KST,KPROF,YDSL,KHVI,KSTABUF,LDFINDVSEP,LDSLHD,LDSLHDQUAD,LDINTV,&

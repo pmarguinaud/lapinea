@@ -1,3 +1,4 @@
+!$acc routine(LARCINHA) seq
 SUBROUTINE LARCINHA(&
  ! --- INPUT ---------------------------------------------------------
  & YDGEOMETRY, YDML_DYN,KST,KPROF,YDSL,KHVI,KSTABUF,KTIP,KROT,PLSDEPI,&

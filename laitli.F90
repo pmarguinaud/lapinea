@@ -1,6 +1,7 @@
 #ifdef NECSX
 !option! -O extendreorder
 #endif
+!$acc routine(LAITLI) seq
 SUBROUTINE LAITLI(KPROMA,KPROMB,KST,KPROF,KFLEV,&
  & KFLDN,KFLDX,&
  & PDLAT,PDLO,KL0,PDVER,&
