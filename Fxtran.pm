@@ -7,6 +7,7 @@ use FileHandle;
 use Storable;
 use File::Basename;
 use Storable;
+use Carp qw (croak);
 use strict;
 
 use base qw (Exporter);
@@ -1196,9 +1197,13 @@ sub add_used_vars
 sub stmt_is_executable
 {
   my $stmt = shift;
+  &croak ("Undefined stmt\n") unless ($stmt);
+
   my @noexec = ('subroutine-stmt', 'use-stmt', 'T-decl-stmt', 'end-subroutine-stmt', 'data-stmt', 'save-stmt',
                 'implicit-none-stmt');
   my %noexec = map {($_, 1)} @noexec;
+
+
   if ($noexec{$stmt->nodeName})
     {
       return 0;

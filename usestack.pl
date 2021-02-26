@@ -33,12 +33,17 @@ for my $pu (@pu)
       {
 
         my ($name) = &f ('.//f:EN-N/f:N/f:n/text ()', $en, 1);
+        next if ($args{$name});
+
         my $stmt = &Fxtran::stmt ($en);
 
         my ($as) = &f ('.//f:array-spec', $stmt);
-        my @ss = &f ('.//f:array-spec//f:shape-spec//f:upper-bound/*', $stmt);
+        my @ss = &f ('.//f:array-spec//f:shape-spec', $stmt, 1);
         next unless (@ss);
-        next if ($args{$name});
+ 
+        next unless ($ss[0] =~ m/(%NPROMA$|^KPROMA$|^KPROMB$)/o);
+
+
 
         push @name, $name;
 
@@ -60,7 +65,7 @@ for my $pu (@pu)
     
     my @stmt = &f ('./f:' . &Fxtran::xpath_by_type ('stmt'), $pu);
 
-    for my $i (0 .. $#stmt)
+    for my $i (0 .. $#stmt-1)
       {
         if (&Fxtran::stmt_is_executable ($stmt[$i+1]))
           {
