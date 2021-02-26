@@ -1,5 +1,8 @@
 MODULE YOMMP0
 
+
+#include "create.h"
+
 USE PARKIND1  ,ONLY : JPIM
 
 IMPLICIT NONE
@@ -109,52 +112,92 @@ SAVE
 !  NSTROUT : Number of processors required to perform output processing
 
 INTEGER(KIND=JPIM), ALLOCATABLE :: NPRCIDS(:)
+create (NPRCIDS)
 INTEGER(KIND=JPIM), ALLOCATABLE, TARGET :: NGPSET2PE(:,:)
+create (NGPSET2PE)
 INTEGER(KIND=JPIM)              :: N_REGIONS_NS
+create (N_REGIONS_NS)
 INTEGER(KIND=JPIM)              :: N_REGIONS_EW
+create (N_REGIONS_EW)
 INTEGER(KIND=JPIM), TARGET, ALLOCATABLE :: N_REGIONS(:)
+create (N_REGIONS)
 LOGICAL :: LSPLIT
+create (LSPLIT)
 LOGICAL :: LEQ_REGIONS
+create (LEQ_REGIONS)
 LOGICAL :: LSPLITOUT
+create (LSPLITOUT)
 LOGICAL :: LSYNC_SLCOM
+create (LSYNC_SLCOM)
 LOGICAL :: LSYNC_TRANS
+create (LSYNC_TRANS)
 LOGICAL :: LSLDEBUG
+create (LSLDEBUG)
 LOGICAL :: LSLONDEM
 
+create (LSLONDEM)
 INTEGER(KIND=JPIM) :: MP_TYPE
+create (MP_TYPE)
 INTEGER(KIND=JPIM) :: MBX_SIZE
+create (MBX_SIZE)
 INTEGER(KIND=JPIM) :: MYPROC
+create (MYPROC)
 INTEGER(KIND=JPIM) :: MYSETA
+create (MYSETA)
 INTEGER(KIND=JPIM) :: MYSETB
+create (MYSETB)
 INTEGER(KIND=JPIM) :: MYSETW
+create (MYSETW)
 INTEGER(KIND=JPIM) :: MYSETV
+create (MYSETV)
 INTEGER(KIND=JPIM) :: MYSETM
+create (MYSETM)
 INTEGER(KIND=JPIM) :: MYSETN
+create (MYSETN)
 INTEGER(KIND=JPIM) :: MY_REGION_NS
+create (MY_REGION_NS)
 INTEGER(KIND=JPIM) :: MY_REGION_EW
+create (MY_REGION_EW)
 INTEGER(KIND=JPIM) :: NFLDIN
+create (NFLDIN)
 INTEGER(KIND=JPIM) :: NSLPAD
+create (NSLPAD)
 INTEGER(KIND=JPIM) :: NOUTTYPE
+create (NOUTTYPE)
 INTEGER(KIND=JPIM) :: NWRTOUT
+create (NWRTOUT)
 INTEGER(KIND=JPIM) :: NDISTIO(50)
+create (NDISTIO)
 LOGICAL            :: LUSEWRGRIDALL
+create (LUSEWRGRIDALL)
 INTEGER(KIND=JPIM) :: NCOMBFLEN
+create (NCOMBFLEN)
 LOGICAL :: LMPOFF
+create (LMPOFF)
 INTEGER(KIND=JPIM) :: NSPECRESMIN
+create (NSPECRESMIN)
 LOGICAL :: LOUTPUT
+create (LOUTPUT)
 INTEGER(KIND=JPIM) :: NOUTPUT
+create (NOUTPUT)
 INTEGER(KIND=JPIM) :: NPRINTLEV
+create (NPRINTLEV)
 LOGICAL :: LMPDIAG
+create (LMPDIAG)
 LOGICAL :: LOPT_SCALAR
+create (LOPT_SCALAR)
 LOGICAL :: LOPT_RS6K
+create (LOPT_RS6K)
 LOGICAL :: LSCMEC
 
+create (LSCMEC)
 ! Use of synchronization/blocking in Transpose (some networks do get flooded)
 ! 0 = Post IRECVs up-front, use ISENDs, use WAITANY to recv data (default)
 ! 1 = Use ISENDs, use blocking RECVs, add barrier at the end of each cycle
 ! 2 = Use buffered SENDs, use blocking RECVs, add barrier at the end of each cycle
 INTEGER(KIND=JPIM) :: NTRANS_SYNC_LEVEL = 0
 
+create (NTRANS_SYNC_LEVEL)
 ! Use of synchronization/blocking in SLCOMM(s) (some networks do get flooded)
 ! 0 = Post IRECVs and ISENDs followed by WAITALLs (default)
 ! 1 = Use ISENDs, but use blocking RECVs
@@ -162,26 +205,39 @@ INTEGER(KIND=JPIM) :: NTRANS_SYNC_LEVEL = 0
 INTEGER(KIND=JPIM) :: NSLCOMM_SYNC_LEVEL = 0
 
 
+create (NSLCOMM_SYNC_LEVEL)
 INTEGER(KIND=JPIM) :: NPROC
+create (NPROC)
 INTEGER(KIND=JPIM) :: NPRGPNS
+create (NPRGPNS)
 INTEGER(KIND=JPIM) :: NPRGPEW
+create (NPRGPEW)
 INTEGER(KIND=JPIM) :: NPRTRNS
+create (NPRTRNS)
 INTEGER(KIND=JPIM) :: NPRTRN
+create (NPRTRN)
 INTEGER(KIND=JPIM) :: NPRTRW
+create (NPRTRW)
 INTEGER(KIND=JPIM) :: NPRTRV
+create (NPRTRV)
 INTEGER(KIND=JPIM) :: NSTRIN
+create (NSTRIN)
 INTEGER(KIND=JPIM) :: NSTROUT
 
+create (NSTROUT)
 ! ----------------------------------------------------------------------
 
 !     -- for use by diwrgrid*.F90 routine(s) : Override this via nampar1.h
 
 INTEGER(KIND=JPIM) :: M_BARRINC_DIWRGRID = 3 
 
+create (M_BARRINC_DIWRGRID)
 #ifdef RS6K
 LOGICAL :: L_GATHERV_WRGP = .FALSE.
+create (L_GATHERV_WRGP)
 #else
 LOGICAL :: L_GATHERV_WRGP = .TRUE.
+create (L_GATHERV_WRGP)
 #endif
 
 END MODULE YOMMP0

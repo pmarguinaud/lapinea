@@ -26,7 +26,7 @@ sub deps
       my $code = &slurp ($f);
       my @inc = ($code =~ m/\n\s*#include\s+"(.*?)"/goms);
       my @use = ($code =~ m/\n\s*use\s+(\w+)/gomis);
-      my @mod = map { lc ($_) . '.mod' } @use;
+      my @mod = map { lc ($_) . '.o' } @use;
       $deps{$f} = [@mod, @inc];
    }
 
@@ -68,15 +68,6 @@ EOF
     elsif ($kind eq 'PROGRAM')
       {
         push @prg, $F90;
-      }
-    elsif ($kind eq 'MODULE')
-      {
-        (my $mod = $F90) =~ s/\.F90$/.mod/o;
-        (my $obj = $F90) =~ s/\.F90$/.o/o;
-        $fh->print (<< "EOF");
-$mod: $obj
-
-EOF
       }
   }
 

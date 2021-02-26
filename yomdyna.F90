@@ -1,5 +1,8 @@
 MODULE YOMDYNA
 
+
+#include "create.h"
+
 USE PARKIND1  ,ONLY : JPIM     ,JPRB
 
 IMPLICIT NONE
@@ -58,18 +61,30 @@ SAVE
 !  F: first compute RHS of (gw) equation, then compute "LAPL [(pre-prehyd)/prehyd]".
 
 INTEGER(KIND=JPIM) :: NPDVAR
+create (NPDVAR)
 INTEGER(KIND=JPIM) :: NVDVAR
+create (NVDVAR)
 INTEGER(KIND=JPIM) :: ND4SYS
+create (ND4SYS)
 LOGICAL :: LNHX
+create (LNHX)
 LOGICAL :: LNHXDER
+create (LNHXDER)
 LOGICAL :: LGWADV
+create (LGWADV)
 INTEGER(KIND=JPIM) :: NGWADVSI
+create (NGWADVSI)
 LOGICAL :: LRDBBC
+create (LRDBBC)
 LOGICAL :: LSI_NHEE
+create (LSI_NHEE)
 LOGICAL :: LNHQE_C2
+create (LNHQE_C2)
 LOGICAL :: LNHQE_SIHYD
+create (LNHQE_SIHYD)
 LOGICAL :: LNHEE_SVDLAPL_FIRST
 
+create (LNHEE_SVDLAPL_FIRST)
 ! ------ SLHD diffusion ------------------------------------------------
 
 !          SLHD (= horizontal diffusion using damping properties of some
@@ -95,43 +110,63 @@ LOGICAL :: LNHEE_SVDLAPL_FIRST
 ! LSLHDVER  : switch activating vertical dependency of SLHDEPSV to B coefficient
 
 LOGICAL :: LSLHD
+create (LSLHD)
 LOGICAL :: LSLHD_W
+create (LSLHD_W)
 LOGICAL :: LSLHD_T
+create (LSLHD_T)
 LOGICAL :: LSLHD_SPD
+create (LSLHD_SPD)
 LOGICAL :: LSLHD_SVD
+create (LSLHD_SVD)
 LOGICAL :: LSLHD_GFL
+create (LSLHD_GFL)
 LOGICAL :: LSLHD_OLD
+create (LSLHD_OLD)
 LOGICAL :: LSLHD_STATIC
+create (LSLHD_STATIC)
 LOGICAL :: LSLHDQUAD
+create (LSLHDQUAD)
 LOGICAL :: LSLHDVER
+create (LSLHDVER)
 REAL(KIND=JPRB) :: SLHDKMIN
+create (SLHDKMIN)
 REAL(KIND=JPRB) :: SLHDKMAX
+create (SLHDKMAX)
 REAL(KIND=JPRB) :: SLHDKREF
+create (SLHDKREF)
 REAL(KIND=JPRB) :: SLHDEPSH
+create (SLHDEPSH)
 REAL(KIND=JPRB) :: SLHDEPSV
 
+create (SLHDEPSV)
 ! ------ Other diffusive processes ------------------------------------------
 
 ! LGRADSP    : special switch for de-aliasing the pressure gradient term
 ! LGRADGP    : use grid-point hor. derivatives
 
 LOGICAL :: LGRADSP
+create (LGRADSP)
 LOGICAL :: LGRADGP
 
+create (LGRADGP)
 ! ------ 3D turbulence ------------------------------------------------------
 
 ! L3DTURB   : main key to activate 3D turbulence
 
 LOGICAL :: L3DTURB
 
+create (L3DTURB)
 ! ------ Dynamics diagnostics -----------------------------------------------
 
 ! LSLDIA    : switch on semi-lagrangian dynamics diagnostics
 ! LRPRSLTRJ : more detailed printings in LARMES/ELARMES (SL displacement).
 
 LOGICAL :: LSLDIA
+create (LSLDIA)
 LOGICAL :: LRPRSLTRJ
 
+create (LRPRSLTRJ)
 ! ------ Semi-Lagrangian scheme ---------------------------------------------
 
 ! LRALTVDISP : alternate way to compute vertical displacement (semi-Lagrangian advection),
@@ -157,26 +192,46 @@ LOGICAL :: LRPRSLTRJ
 ! LSLINL     : separate linear terms from non-linear terms in other equations (case (LGWADV,LSETTLS)=(T,T)).
 
 LOGICAL :: LRALTVDISP
+create (LRALTVDISP)
 LOGICAL :: LVSPLIP
+create (LVSPLIP)
 LOGICAL :: LCOMAD
+create (LCOMAD)
 LOGICAL :: LCOMADH
+create (LCOMADH)
 LOGICAL :: LCOMADV
+create (LCOMADV)
 LOGICAL :: LCOMAD_W
+create (LCOMAD_W)
 LOGICAL :: LCOMAD_T
+create (LCOMAD_T)
 LOGICAL :: LCOMAD_SPD
+create (LCOMAD_SPD)
 LOGICAL :: LCOMAD_SVD
+create (LCOMAD_SVD)
 LOGICAL :: LCOMAD_SP
+create (LCOMAD_SP)
 LOGICAL :: LCOMAD_GFL
+create (LCOMAD_GFL)
 LOGICAL :: LNESCT
+create (LNESCT)
 LOGICAL :: LNESCV
+create (LNESCV)
 LOGICAL :: LNESC
+create (LNESC)
 LOGICAL :: LSETTLST
+create (LSETTLST)
 LOGICAL :: LSETTLSV
+create (LSETTLSV)
 LOGICAL :: LSETTLS
+create (LSETTLS)
 LOGICAL :: LELTRA
+create (LELTRA)
 LOGICAL :: LSLINLC2
+create (LSLINLC2)
 LOGICAL :: LSLINL
 
+create (LSLINL)
 ! ------ Vertical discretisation --------------------------------------------
 
 ! LAPRXPK : way of computing full-levels pressures in primitive equation
@@ -196,10 +251,14 @@ LOGICAL :: LSLINL
 ! LRUBC   : .T. if radiational upper boundary condition
 
 LOGICAL :: LAPRXPK
+create (LAPRXPK)
 INTEGER(KIND=JPIM) :: NDLNPR
+create (NDLNPR)
 REAL(KIND=JPRB) :: RHYDR0
+create (RHYDR0)
 LOGICAL :: LRUBC
 
+create (LRUBC)
 ! ------ PC (ICI) schemes ---------------------------------------------------
 
 ! LPC_FULL  : full PC scheme switch (with reiterations of trajectories)
@@ -216,22 +275,30 @@ LOGICAL :: LRUBC
 ! RMIXNL_TRH: treshold for mixed NESC/SETTLS scheme
 
 LOGICAL :: LPC_FULL
+create (LPC_FULL)
 LOGICAL :: LPC_CHEAP
+create (LPC_CHEAP)
 LOGICAL :: LPC_CHEAP2
+create (LPC_CHEAP2)
 LOGICAL :: LMIXETTLS
+create (LMIXETTLS)
 LOGICAL :: LMIXETTLS_PRINT
+create (LMIXETTLS_PRINT)
 REAL(KIND=JPRB) :: RMIXNL_TRH
 
+create (RMIXNL_TRH)
 !     ------------------------------------------------------------------
 ! LDRY_ECMWF     : .TRUE.  = COMPUTE Cp, R AND R/Cp WITHOUT Q REALTED TERMS
 ! LDRY_ECMWF     : .FALSE. = COMPUTE Cp, R AND R/Cp WITH    Q REALTED TERMS
 
 LOGICAL :: LDRY_ECMWF
 
+create (LDRY_ECMWF)
 !     ------------------------------------------------------------------
 ! L_RDRY_VD      : .T.: define vertical divergence with R_dry
 !                  .F.: define vertical divergence with R_moist
 LOGICAL :: L_RDRY_VD
 
+create (L_RDRY_VD)
 ! ----------------------------------------------------------------------
 END MODULE YOMDYNA

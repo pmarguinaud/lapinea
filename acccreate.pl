@@ -16,7 +16,6 @@ my @pu = &f ('./f:object/f:file/f:program-unit', $doc);
 
 my $pu = $pu[0];
 
-print $pu->toString, "\n";
 
 my $stmt = $pu->firstChild;
 
@@ -37,4 +36,4 @@ for my $en (@en)
     
   }
 
-'FileHandle'->new (">$F90")->print ($doc->textContent);
+'FileHandle'->new (">$F90.new")->print ($doc->textContent);

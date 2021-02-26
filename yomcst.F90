@@ -1,5 +1,8 @@
 MODULE YOMCST
 
+
+#include "create.h"
+
 USE PARKIND1  ,ONLY : JPRB
 
 IMPLICIT NONE
@@ -18,11 +21,16 @@ SAVE
 ! * RKBOL        : Bolzmann constant
 ! * RNAVO        : Avogadro number
 REAL(KIND=JPRB) :: RPI
+create (RPI)
 REAL(KIND=JPRB) :: RCLUM
+create (RCLUM)
 REAL(KIND=JPRB) :: RHPLA
+create (RHPLA)
 REAL(KIND=JPRB) :: RKBOL
+create (RKBOL)
 REAL(KIND=JPRB) :: RNAVO
 
+create (RNAVO)
 ! A1.1 Astronomical constants
 ! * RDAY         : duration of the solar day
 ! * RDAYI        : invariant time unit of 86400s
@@ -33,28 +41,41 @@ REAL(KIND=JPRB) :: RNAVO
 ! * RSIDAY       : duration of the sideral day
 ! * ROMEGA       : angular velocity of the Earth rotation
 REAL(KIND=JPRB) :: RDAY
+create (RDAY)
 REAL(KIND=JPRB) :: RDAYI
+create (RDAYI)
 REAL(KIND=JPRB) :: RHOUR
+create (RHOUR)
 REAL(KIND=JPRB) :: REA
+create (REA)
 REAL(KIND=JPRB) :: REPSM
+create (REPSM)
 REAL(KIND=JPRB) :: RSIYEA
+create (RSIYEA)
 REAL(KIND=JPRB) :: RSIDAY
+create (RSIDAY)
 REAL(KIND=JPRB) :: ROMEGA
 
+create (ROMEGA)
 ! A1.2 Geoide
 ! * RA           : Earth radius
 ! * RG           : gravity constant
 ! * R1SA         : 1/RA
 REAL(KIND=JPRB) :: RA
+create (RA)
 REAL(KIND=JPRB) :: RG
+create (RG)
 REAL(KIND=JPRB) :: R1SA
 
+create (R1SA)
 ! A1.3 Radiation
 ! * RSIGMA       : Stefan-Bolzman constant
 ! * RI0          : solar constant
 REAL(KIND=JPRB) :: RSIGMA
+create (RSIGMA)
 REAL(KIND=JPRB) :: RI0
 
+create (RI0)
 ! A1.4 Thermodynamic gas phase
 ! * R            : perfect gas constant
 ! * RMD          : dry air molar mass
@@ -77,32 +98,54 @@ REAL(KIND=JPRB) :: RI0
 ! * RMSO2        : SO2 (sulfur dioxyde) molar mass
 ! * RMSO4        : SO4 (sulphate) molar mass
 REAL(KIND=JPRB) :: R
+create (R)
 REAL(KIND=JPRB) :: RMD
+create (RMD)
 REAL(KIND=JPRB) :: RMV
+create (RMV)
 REAL(KIND=JPRB) :: RMO3
+create (RMO3)
 REAL(KIND=JPRB) :: RD
+create (RD)
 REAL(KIND=JPRB) :: RV
+create (RV)
 REAL(KIND=JPRB) :: RCPD
+create (RCPD)
 REAL(KIND=JPRB) :: RCPV
+create (RCPV)
 REAL(KIND=JPRB) :: RCVD
+create (RCVD)
 REAL(KIND=JPRB) :: RCVV
+create (RCVV)
 REAL(KIND=JPRB) :: RKAPPA
+create (RKAPPA)
 REAL(KIND=JPRB) :: RETV
+create (RETV)
 REAL(KIND=JPRB) :: RMCO2
+create (RMCO2)
 REAL(KIND=JPRB) :: RMCH4
+create (RMCH4)
 REAL(KIND=JPRB) :: RMN2O
+create (RMN2O)
 REAL(KIND=JPRB) :: RMCO
+create (RMCO)
 REAL(KIND=JPRB) :: RMHCHO
+create (RMHCHO)
 REAL(KIND=JPRB) :: RMNO2
+create (RMNO2)
 REAL(KIND=JPRB) :: RMSO2
+create (RMSO2)
 REAL(KIND=JPRB) :: RMSO4
 
+create (RMSO4)
 ! A1.5,6 Thermodynamic liquid,solid phases
 ! * RCW          : Cw (calorific capacity of liquid water)
 ! * RCS          : Cs (calorific capacity of solid water)
 REAL(KIND=JPRB) :: RCW
+create (RCW)
 REAL(KIND=JPRB) :: RCS
 
+create (RCS)
 ! A1.7 Thermodynamic transition of phase
 ! * RATM         : pre_n = "normal" pressure
 ! * RTT          : Tt = temperature of water fusion at "pre_n"
@@ -113,14 +156,22 @@ REAL(KIND=JPRB) :: RCS
 ! * RLMLT        : RLMlt = melting latent heat at T=Tt
 ! * RDT          : Tt - Tx(ew-ei)
 REAL(KIND=JPRB) :: RATM
+create (RATM)
 REAL(KIND=JPRB) :: RTT
+create (RTT)
 REAL(KIND=JPRB) :: RLVTT
+create (RLVTT)
 REAL(KIND=JPRB) :: RLSTT
+create (RLSTT)
 REAL(KIND=JPRB) :: RLVZER
+create (RLVZER)
 REAL(KIND=JPRB) :: RLSZER
+create (RLSZER)
 REAL(KIND=JPRB) :: RLMLT
+create (RLMLT)
 REAL(KIND=JPRB) :: RDT
 
+create (RDT)
 ! A1.8 Curve of saturation
 ! * RESTT        : es(Tt) = saturation vapour tension at T=Tt
 ! * RGAMW        : Rgamw = (Cw-Cp_vap)/R_vap
@@ -133,20 +184,32 @@ REAL(KIND=JPRB) :: RDT
 ! * RBETD        : Rbetd = Rbets - Rbetw
 ! * RGAMD        : Rgamd = Rgams - Rgamw
 REAL(KIND=JPRB) :: RESTT
+create (RESTT)
 REAL(KIND=JPRB) :: RGAMW
+create (RGAMW)
 REAL(KIND=JPRB) :: RBETW
+create (RBETW)
 REAL(KIND=JPRB) :: RALPW
+create (RALPW)
 REAL(KIND=JPRB) :: RGAMS
+create (RGAMS)
 REAL(KIND=JPRB) :: RBETS
+create (RBETS)
 REAL(KIND=JPRB) :: RALPS
+create (RALPS)
 REAL(KIND=JPRB) :: RALPD
+create (RALPD)
 REAL(KIND=JPRB) :: RBETD
+create (RBETD)
 REAL(KIND=JPRB) :: RGAMD
 
+create (RGAMD)
 ! NaN value
 CHARACTER(LEN=8), PARAMETER :: CSNAN = &
   & CHAR(0)//CHAR(0)//CHAR(0)//CHAR(0)//CHAR(0)//CHAR(0)//CHAR(244)//CHAR(127)
+create (CSNAN)
 REAL(KIND=JPRB) :: RSNAN
 
+create (RSNAN)
 !    ------------------------------------------------------------------
 END MODULE YOMCST

@@ -1,5 +1,8 @@
 MODULE YOMLUN
 
+
+#include "create.h"
+
 USE PARKIND1  ,ONLY : JPIM
 USE YOMLUN_IFSAUX, ONLY : NULOUT, NULERR
 
@@ -97,53 +100,87 @@ PUBLIC :: NULERR, NULSTAT, NULNAM, NSCRTCH, NULFP10, NULCL1, NULFP11, &
 
 ! --- Reserved for NULERR ----------------  0
 INTEGER(KIND=JPIM), PARAMETER :: NULSTAT =  1
+create (NULSTAT)
 !                                           2
 !                                           3
 INTEGER(KIND=JPIM), PARAMETER :: NULNAM  =  4
+create (NULNAM)
 !                                           5
 ! --- Reserved by Fortran                   6
 INTEGER(KIND=JPIM), PARAMETER :: NULFP11 =  7
+create (NULFP11)
 INTEGER(KIND=JPIM), PARAMETER :: NSCRTCH =  8
+create (NSCRTCH)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP10 =  9
+create (NULFP10)
 INTEGER(KIND=JPIM), PARAMETER :: NULCL1  = 10
+create (NULCL1)
 INTEGER(KIND=JPIM), PARAMETER :: NULCL2  = 11
+create (NULCL2)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP09 = 12
+create (NULFP09)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP08 = 13
+create (NULFP08)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP07 = 14
+create (NULFP07)
 INTEGER(KIND=JPIM), PARAMETER :: NULASE  = 16
+create (NULASE)
 INTEGER(KIND=JPIM), PARAMETER :: NULASS  = 17
+create (NULASS)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP06 = 18
+create (NULFP06)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP05 = 19
+create (NULFP05)
 ! --- Reserved for NULOUT ---------------- 20
 INTEGER(KIND=JPIM), PARAMETER :: NULRAD  = 25
+create (NULRAD)
 INTEGER(KIND=JPIM), PARAMETER :: NULRTL  = 26
+create (NULRTL)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP04 = 30
+create (NULFP04)
 !                                          31
 INTEGER(KIND=JPIM), PARAMETER :: NULFP12 = 32
+create (NULFP12)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP13 = 33
+create (NULFP13)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP14 = 34
+create (NULFP14)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP15 = 35
+create (NULFP15)
 INTEGER(KIND=JPIM), PARAMETER :: NSCATAB = 36
+create (NSCATAB)
 INTEGER(KIND=JPIM), PARAMETER :: NSCASIG = 37
+create (NSCASIG)
 INTEGER(KIND=JPIM), PARAMETER :: NSCASPE = 38
+create (NSCASPE)
 INTEGER(KIND=JPIM), PARAMETER :: NEGASH  = 39
+create (NEGASH)
 !                                          40
 !                                          41
 !                                          42
 INTEGER(KIND=JPIM), PARAMETER :: NULFP03 = 43
+create (NULFP03)
 !                                          44
 !                                          45
 INTEGER(KIND=JPIM), PARAMETER :: NULDILA = 46
+create (NULDILA)
 INTEGER(KIND=JPIM), PARAMETER :: NULCONT = 47
+create (NULCONT)
 !                                          48
 !                                          49
 INTEGER(KIND=JPIM), PARAMETER :: NULFP02 = 50
+create (NULFP02)
 INTEGER(KIND=JPIM), PARAMETER :: NPOSSH  = 51
+create (NPOSSH)
 !                                          52
 INTEGER(KIND=JPIM), PARAMETER :: NPODDH  = 53
+create (NPODDH)
 INTEGER(KIND=JPIM), PARAMETER :: NULFP01 = 54
+create (NULFP01)
 INTEGER(KIND=JPIM), PARAMETER :: NULCO   = 55
+create (NULCO)
 INTEGER(KIND=JPIM), PARAMETER :: NTIDE   = 56
+create (NTIDE)
 ! --- Reserved for RESERVE_LUN ----------- 57 
 ! --- Reserved for RESERVE_LUN ----------- 58
 ! --- Reserved for RESERVE_LUN ----------- 59
@@ -155,49 +192,81 @@ INTEGER(KIND=JPIM), PARAMETER :: NTIDE   = 56
 ! --- Reserved for RESERVE_LUN ----------- 65
 ! --- Reserved for RESERVE_LUN ----------- 66
 INTEGER(KIND=JPIM), PARAMETER :: NUIO_SERV_LOG = 67
+create (NUIO_SERV_LOG)
 INTEGER(KIND=JPIM), PARAMETER :: NTRJSH  = 71
 
+create (NTRJSH)
 ! NB: NULTRAJHR is not a parameter because read_surfgrid_traj_fromfa resets it.
 INTEGER(KIND=JPIM)            :: NULTRAJHR = 72
 
+create (NULTRAJHR)
 ! NB: NEFLSS is not a parameter because ELSAC (in ALD) resets it.
 INTEGER(KIND=JPIM)            :: NEFLSS  = 73
 
+create (NEFLSS)
 INTEGER(KIND=JPIM), PARAMETER :: NULFPOS = 74
+create (NULFPOS)
 !                                          75
 !                                          76
 !                                          77
 INTEGER(KIND=JPIM), PARAMETER :: NEFLS   = 78
+create (NEFLS)
 INTEGER(KIND=JPIM), PARAMETER :: NINMSH  = 79
+create (NINMSH)
 !                                          80
 INTEGER(KIND=JPIM), PARAMETER :: NINISH  = 81
+create (NINISH)
 INTEGER(KIND=JPIM), PARAMETER :: NINIGG  = 82
+create (NINIGG)
 INTEGER(KIND=JPIM), PARAMETER :: NFGISH  = 83
+create (NFGISH)
 INTEGER(KIND=JPIM), PARAMETER :: NULTRAJBG = NFGISH ! -- Dangerous!!
+create (NULTRAJBG)
 INTEGER(KIND=JPIM), PARAMETER :: NPRT0   = 85
+create (NPRT0)
 INTEGER(KIND=JPIM), PARAMETER :: NPRT1   = 86
+create (NPRT1)
 INTEGER(KIND=JPIM), PARAMETER :: NPRT2   = 87
+create (NPRT2)
 INTEGER(KIND=JPIM), PARAMETER :: NPRT3   = 88
+create (NPRT3)
 INTEGER(KIND=JPIM), PARAMETER :: NPRT4   = 89
+create (NPRT4)
 INTEGER(KIND=JPIM), PARAMETER :: NBIAS   = 90
+create (NBIAS)
 INTEGER(KIND=JPIM), PARAMETER :: NPPPSH  = 91
+create (NPPPSH)
 INTEGER(KIND=JPIM), PARAMETER :: NPDIRL  = 92
+create (NPDIRL)
 INTEGER(KIND=JPIM), PARAMETER :: NULHWF  = 93
+create (NULHWF)
 INTEGER(KIND=JPIM), PARAMETER :: NULRCF  = 94
+create (NULRCF)
 INTEGER(KIND=JPIM), PARAMETER :: NULUSR1 = 95
+create (NULUSR1)
 INTEGER(KIND=JPIM), PARAMETER :: NULUSR2 = 96
+create (NULUSR2)
 INTEGER(KIND=JPIM), PARAMETER :: NULUSR3 = 97
+create (NULUSR3)
 INTEGER(KIND=JPIM), PARAMETER :: NULUSR4 = 98
+create (NULUSR4)
 INTEGER(KIND=JPIM), PARAMETER :: NULUSR5 = 99
+create (NULUSR5)
 INTEGER(KIND=JPIM), PARAMETER :: NULBDEGP = 100
+create (NULBDEGP)
 INTEGER(KIND=JPIM), PARAMETER :: NULBDESH = 200
+create (NULBDESH)
 ! --- Reserved for NULDRHACK ----------- 999 defined in yomlun_ifsaux.F90
 INTEGER(KIND=JPIM), PARAMETER :: JP_RESERVE_FIRST=57
+create (JP_RESERVE_FIRST)
 INTEGER(KIND=JPIM), PARAMETER :: JP_RESERVE_LAST =70
 
+create (JP_RESERVE_LAST)
 INTEGER(KIND=JPIM) :: I
+create (I)
 LOGICAL :: LRESERVED(JP_RESERVE_FIRST:JP_RESERVE_LAST) = &
         & (/ (.FALSE.,I=JP_RESERVE_FIRST,JP_RESERVE_LAST) /)
+create (LRESERVED)
 !     ------------------------------------------------------------------
 
 END MODULE YOMLUN

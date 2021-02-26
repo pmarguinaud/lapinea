@@ -1,5 +1,8 @@
 MODULE YOMJFH
 
+
+#include "create.h"
+
 USE PARKIND1  ,ONLY : JPIM
 
 IMPLICIT NONE
@@ -14,6 +17,7 @@ SAVE
 
 INTEGER(KIND=JPIM) :: N_VMASS=0
 
+create (N_VMASS)
 !    -----------------------------------------------------------------
 
 END MODULE YOMJFH
