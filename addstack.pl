@@ -28,7 +28,7 @@ for my $pu (@pu)
 
     my @darglt = map { $_->textContent } &f ('./f:arg-N', $darglt);
 
-    ($stmt) = &f ('.//f:T-decl-stmt[.//f:EN-decl/f:EN-N/f:N/f:n/text ()="KLON"]', $pu);
+    ($stmt) = &f ('.//f:T-decl-stmt[.//f:EN-decl/f:EN-N/f:N/f:n/text ()="KST"]', $pu);
 
     my $xpath = './/f:T-decl-stmt[' . join (' or ',
                   map { './/f:EN-decl/f:EN-N/f:N/f:n/text ()="' . $_ . '"' } @darglt) . ']';
@@ -73,6 +73,8 @@ for my $pu (@pu)
     
     for my $call (@call)
       {
+        my ($name) = &f ('./f:procedure-designator/f:named-E/f:N/f:n/text ()', $call);
+        next if ($name eq 'ABOR1');
         my ($argspec) = &f ('./f:arg-spec', $call);
         next unless ($argspec);
 

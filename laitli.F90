@@ -4,7 +4,7 @@
 SUBROUTINE LAITLI(KPROMA,KPROMB,KST,KPROF,KFLEV,&
  & KFLDN,KFLDX,&
  & PDLAT,PDLO,KL0,PDVER,&
- & PXSL,PXF)  
+ & PXSL,PXF,KSTPT,KSTSZ,PSTACK)  
 
 !**** *LAITLI  -  semi-LAgrangian scheme:
 !                 Trilinear interpolations for one variable.
@@ -95,6 +95,9 @@ INTEGER(KIND=JPIM),INTENT(IN)    :: KL0(KPROMB,KFLEV,1:2)
 REAL(KIND=JPRB)   ,INTENT(IN)    :: PDVER(KPROMB,KFLEV) 
 REAL(KIND=JPRB)   ,INTENT(IN)    :: PXSL(KPROMA*(KFLDX-KFLDN+1)) 
 REAL(KIND=JPRB)   ,INTENT(OUT)   :: PXF(KPROMB,KFLEV) 
+INTEGER(KIND=JPIM),INTENT(IN)    :: KSTSZ
+INTEGER(KIND=JPIM),INTENT(IN)    :: KSTPT
+REAL   (KIND=JPRB),INTENT(INOUT) :: PSTACK (KSTSZ)
 !     ------------------------------------------------------------------
 
 INTEGER(KIND=JPIA) :: IV1L1, IV1L2, IV2L1, IV2L2

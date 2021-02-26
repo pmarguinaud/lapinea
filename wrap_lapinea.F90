@@ -43,6 +43,10 @@ REAL (KIND=JPRB)   , POINTER :: PRSCAWH (:,:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PSCO    (:,:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PGFLT1  (:,:,:,:)
 
+REAL (KIND=JPRB)   , POINTER :: PSTACK  (:,:)
+INTEGER (KIND=JPIM)          :: KSTSZ
+INTEGER (KIND=JPIM)          :: KSTPT
+
 #include "lapinea.intfb.h"
 
 INTEGER (KIND=JPIM), POINTER :: KVSEPC_OUT  (:)
@@ -119,6 +123,10 @@ IF (ICOUNT == 0) ICOUNT = SIZE (KVSEPC)
 
 NGPBLKS = MIN (SIZE (KVSEPC), ICOUNT)
 
+KSTPT = 1
+KSTSZ = 100
+ALLOCATE (PSTACK (KSTSZ, NGPBLKS))
+
 #undef LOAD
 
 !$OMP PARALLEL DO SCHEDULE(DYNAMIC,1)&
@@ -137,7 +145,7 @@ NGPBLKS = MIN (SIZE (KVSEPC), ICOUNT)
      & PCCO(:,:,:,IBL),PUF(:,:,IBL),PVF(:,:,IBL),&
      & KL0(:,:,:,IBL),KLH0(:,:,:,IBL),PLSCAW(:,:,:,IBL),PRSCAW(:,:,:,IBL),&
      & KL0H(:,:,:,IBL),PLSCAWH(:,:,:,IBL),PRSCAWH(:,:,:,IBL),&
-     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL))
+     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL),KSTPT,KSTSZ,PSTACK (:,IBL))
 
   ENDDO
 
