@@ -1,4 +1,4 @@
-SUBROUTINE ELARCHE(YDML_DYN,KPROMA,KSTART,KPROF,KFLEV,YDSL,YDEGSL,YDEGEO,YDGSGEOM,PSCO,PCCO)
+SUBROUTINE ELARCHE(YDML_DYN,KPROMA,KST,KPROF,KFLEV,YDSL,YDEGSL,YDEGEO,YDGSGEOM,PSCO,PCCO)
 
 !**** *ELARCHE  -  semi-Lagrangian scheme:
 !                  research of (lat,lon) coordinates of the origin point
@@ -22,7 +22,7 @@ SUBROUTINE ELARCHE(YDML_DYN,KPROMA,KSTART,KPROF,KFLEV,YDSL,YDEGSL,YDEGEO,YDGSGEO
 
 !     INPUT:
 !       KPROMA      - horizontal dimension
-!       KSTART      - start of work
+!       KST         - start of work
 !       KPROF       - depth of work
 !       KFLEV       - vertical dimension
 !       YDSL        - SL_STRUCT definition.
@@ -105,7 +105,7 @@ IMPLICIT NONE
 TYPE(MODEL_DYNAMICS_TYPE),INTENT(IN):: YDML_DYN
 INTEGER(KIND=JPIM),INTENT(IN)    :: KPROMA 
 INTEGER(KIND=JPIM),INTENT(IN)    :: KFLEV 
-INTEGER(KIND=JPIM),INTENT(IN)    :: KSTART 
+INTEGER(KIND=JPIM),INTENT(IN)    :: KST    
 INTEGER(KIND=JPIM),INTENT(IN)    :: KPROF 
 TYPE(SL_STRUCT),   INTENT(IN)    :: YDSL
 TYPE(TEGSL)       ,INTENT(IN)    :: YDEGSL
@@ -181,7 +181,7 @@ IF (LMAP) THEN
     ZREGPK  = 1.0_JPRB/REGPK
     DO JLEV = 1, KFLEV
 
-      DO JROF = KSTART, KPROF
+      DO JROF = KST, KPROF
 
         IF(LLCOMPUTE_OMVAK_O) THEN
           ZXX_TMP(JROF) = (PCCO(JROF,JLEV,YDML_DYN%YYTCCO%M_RLON)-ZDLUN-RIPORE)*EDELX
@@ -206,7 +206,7 @@ IF (LMAP) THEN
       ENDDO
 ! For an unknown reason (Intel compiler bug ?) this computation has to be split here
 ! in order to prevent non-reproducible results when the entire loop is vectorized
-      DO JROF = KSTART, KPROF
+      DO JROF = KST, KPROF
         ZCOSLON = COS(ZLON_TMP(JROF))
 
         ! * calculation of compas
@@ -247,7 +247,7 @@ IF (LMAP) THEN
     ZCOSLON0R = COS(RLON0R)
 
     DO JLEV = 1, KFLEV
-      DO JROF = KSTART, KPROF
+      DO JROF = KST, KPROF
 
         IF(LLCOMPUTE_OMVAK_O) THEN
           ZXP = (PCCO(JROF,JLEV,YDML_DYN%YYTCCO%M_RLON)-ZDLUN)*EDELX
@@ -330,7 +330,7 @@ IF (LMAP) THEN
     !    ------------------
 
     DO JLEV = 1, KFLEV
-      DO JROF = KSTART, KPROF
+      DO JROF = KST, KPROF
 
         IF(LLCOMPUTE_OMVAK_O) THEN
           ZXP = (PCCO(JROF,JLEV,YDML_DYN%YYTCCO%M_RLON)-ZDLUN)*EDELX
@@ -381,8 +381,8 @@ ELSE
   !      3. Academic case.
   !      -----------------
 
-  PCCO(KSTART:KPROF,1:KFLEV,YDML_DYN%YYTCCO%M_RQX) = 1.0_JPRB
-  PCCO(KSTART:KPROF,1:KFLEV,YDML_DYN%YYTCCO%M_RQY) = 0.0_JPRB
+  PCCO(KST:KPROF,1:KFLEV,YDML_DYN%YYTCCO%M_RQX) = 1.0_JPRB
+  PCCO(KST:KPROF,1:KFLEV,YDML_DYN%YYTCCO%M_RQY) = 0.0_JPRB
 
 ENDIF
 

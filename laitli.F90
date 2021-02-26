@@ -1,7 +1,7 @@
 #ifdef NECSX
 !option! -O extendreorder
 #endif
-SUBROUTINE LAITLI(KPROMA,KPROMB,KSTART,KPROF,KFLEV,&
+SUBROUTINE LAITLI(KPROMA,KPROMB,KST,KPROF,KFLEV,&
  & KFLDN,KFLDX,&
  & PDLAT,PDLO,KL0,PDVER,&
  & PXSL,PXF)  
@@ -15,7 +15,7 @@ SUBROUTINE LAITLI(KPROMA,KPROMB,KSTART,KPROF,KFLEV,&
 
 !**   Interface.
 !     ----------
-!        *CALL* *LAITLI(KPROMA,KPROMB,KSTART,KPROF,KFLEV
+!        *CALL* *LAITLI(KPROMA,KPROMB,KST,KPROF,KFLEV
 !                      ,KFLDN,KFLDX
 !                      ,PDLAT,PDLO,KL0,PDVER
 !                      ,PXSL,PXF)
@@ -27,7 +27,7 @@ SUBROUTINE LAITLI(KPROMA,KPROMB,KSTART,KPROF,KFLEV,&
 !          KPROMA  - horizontal dimension for grid-point quantities.
 !          KPROMB  - horizontal dimension for interpolation point
 !                    quantities.
-!          KSTART  - first element of arrays where
+!          KST     - first element of arrays where
 !                    computations are performed.
 !          KPROF   - depth of work.
 !          KFLEV   - vertical dimension.
@@ -87,7 +87,7 @@ INTEGER(KIND=JPIM),INTENT(IN)    :: KPROMB
 INTEGER(KIND=JPIM),INTENT(IN)    :: KFLEV 
 INTEGER(KIND=JPIM),INTENT(IN)    :: KFLDN 
 INTEGER(KIND=JPIM),INTENT(IN)    :: KFLDX 
-INTEGER(KIND=JPIM),INTENT(IN)    :: KSTART 
+INTEGER(KIND=JPIM),INTENT(IN)    :: KST    
 INTEGER(KIND=JPIM),INTENT(IN)    :: KPROF 
 REAL(KIND=JPRB)   ,INTENT(IN)    :: PDLAT(KPROMB,KFLEV) 
 REAL(KIND=JPRB)   ,INTENT(IN)    :: PDLO(KPROMB,KFLEV,1:2) 
@@ -126,7 +126,7 @@ DO JLEV=1,KFLEV
 #endif
 
 !DIR$ NEXTSCALAR
-  DO JROF=KSTART,KPROF
+  DO JROF=KST,KPROF
 
 !     Computation of coordinates and distances.
 
