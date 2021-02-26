@@ -1,3 +1,4 @@
+wrap_lapinea.F90:78CRMBUFSIZE=0
 load_type_gfld_mod.F90:21READ(KLUN)YD%NUMFLDS
 load_type_gfld_mod.F90:22READ(KLUN)YD%NDERS
 load_type_gfld_mod.F90:23READ(KLUN)YD%NUMSPFLDS
