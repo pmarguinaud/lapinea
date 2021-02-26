@@ -3,6 +3,9 @@ SUBROUTINE LASCAW_VINTW(LDSLHDHEAT,KPROM,KFLEV,KST,KPROF,&
  & KLEV,PLEV,PDVER,PDVERMAD,PSTDDISW,PKAPPA,PKAPPAT,PVETA,PVCUICO_,PVSLD_,PVSLDW_,&
  & PVINTW,PVINTWMAD,PVINTWSLD,PVINTWSLT,KSTPT,KSTSZ,PSTACK)
 
+
+#include "temp.h"
+
 !     ------------------------------------------------------------------
 
 !**** *LASCAW_VINTW  -  Weights for semi-LAgrangian interpolator:
@@ -122,6 +125,11 @@ LOGICAL :: LLSLHD,LLSLHDQUAD,LLSLHD_OLD
 
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
+
+init_stack ()
+
+
+
 
 LLSLHD=LDT_SLHD(1)
 LLSLHDQUAD=LDT_SLHD(2)

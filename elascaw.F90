@@ -17,6 +17,9 @@ SUBROUTINE ELASCAW(&
  & PDVER,PDVERMAD,PVINTW,PVINTWSLD,PVINTWSLT,PVINTWMAD,PVINTWS,&
  & PVDERW,PHVW,KDEP,KSTPT,KSTSZ,PSTACK)
 
+
+#include "temp.h"
+
 !**** *ELASCAW  -  Externalisable interpolator:
 !                 Storage of Coordinates And Weights.
 !                 Plane geometry version
@@ -256,12 +259,15 @@ INTEGER(KIND=JPIM) :: IDLUN1, IDLUX1, IFLVM2, ILA, ILA1, ILA2, ILA3,&
 
 REAL(KIND=JPRB) :: PD, ZD2, ZDEN1, ZDEN2, ZDVER, ZFAC, ZNUM
 
-REAL(KIND=JPRB) :: ZKHTURB(KPROMB,KFLEV,KDIMK)
+
+temp (REAL(KIND=JPRB), ZKHTURB, (KPROMB,KFLEV,KDIMK))
 LOGICAL         :: LLT_SLHD(4),LLT_PHYS(4),LLSLHD,LLSLHDQUAD,LLSLHD_OLD,LL3DTURB
 LOGICAL         :: LLCOMAD,LLCOMADH,LLCOMADV
-REAL(KIND=JPRB) :: ZCLA(KPROMB,KFLEV,3) 
-REAL(KIND=JPRB) :: ZCLO(KPROMB,KFLEV,3,2)
+ 
+temp (REAL(KIND=JPRB), ZCLA, (KPROMB,KFLEV,3))
 
+
+temp (REAL(KIND=JPRB), ZCLO, (KPROMB,KFLEV,3,2))
 ! Duplicata of some dummy or local arrays for optimisation on NEC platform.
 INTEGER(KIND=JPIM) :: IADDR_(JPDUP,YDSL%NDGSAH:YDSL%NDGENH)
 REAL(KIND=JPRB) :: ZVETA_(JPDUP,0:KFLEV+1)
@@ -276,6 +282,7 @@ REAL(KIND=JPRB) :: ZVSLDW_(JPDUP,3,3,0:KFLEV-1)
 REAL(KIND=JPRB) :: FHLO1, FHLO2, FHLO3, FHLO4
 
 ! auxiliary functions for Hermite cubic interpolation
+
 FHLO1(PD)= (1.0_JPRB-PD)*(1.0_JPRB-PD)*(1.0_JPRB+2.0_JPRB*PD)
 FHLO2(PD)= PD*PD*(3._JPRB-2.0_JPRB*PD)
 FHLO3(PD)= PD*(1.0_JPRB-PD)*(1.0_JPRB-PD)
@@ -287,6 +294,13 @@ FHLO4(PD)=-PD*PD*(1.0_JPRB-PD)
 #include "lascaw_vintw.intfb.h"
 
 !     ------------------------------------------------------------------
+
+init_stack ()
+
+alloc (ZKHTURB)
+alloc (ZCLA)
+alloc (ZCLO)
+
 
 ASSOCIATE(RFVV=>YDVSPLIP%RFVV)
 !     ------------------------------------------------------------------

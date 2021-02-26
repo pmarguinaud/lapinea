@@ -13,6 +13,9 @@ SUBROUTINE LARCINA(&
  ! --- OUTPUT --------------------------------------------------------
  & PCCO,PUF0,PVF0,PWF0,PWFSM,KL0,KLH0,KLEV,PLSCAW,PRSCAW,KDEP,KSTPT,KSTSZ,PSTACK)
 
+
+#include "temp.h"
+
 !**** *LARCINA  -  semi-LAgrangian scheme:(Trajectory)
 !                 Research of the Coordinates (of the medium or origin
 !                 point) and INterpolations.
@@ -196,7 +199,8 @@ INTEGER(KIND=JPIM),INTENT(IN)    :: KSTPT
 REAL   (KIND=JPRB),INTENT(INOUT) :: PSTACK (KSTSZ)
 !     ------------------------------------------------------------------
 
-INTEGER(KIND=JPIM) :: ISEP(YDGEOMETRY%YRDIM%NPROMA)
+
+temp (INTEGER(KIND=JPIM), ISEP, (YDGEOMETRY%YRDIM%NPROMA))
 INTEGER(KIND=JPIM) :: IHOR, IMINSEP, IVSEP, IWIS, JLEV, JROF
 INTEGER(KIND=JPIM) :: ISPLTHOI, IDIMK
 LOGICAL :: LLDONE, LL3DTURB
@@ -210,6 +214,12 @@ REAL(KIND=JPRB) :: ZDSTRET,ZDEPI,ZPIS2
 #include "laitli.intfb.h"
 
 !     ------------------------------------------------------------------
+
+init_stack ()
+
+alloc (ISEP)
+
+
 
 ASSOCIATE(YDDIM=>YDGEOMETRY%YRDIM, &
  & YDDIMV=>YDGEOMETRY%YRDIMV,YDGEM=>YDGEOMETRY%YRGEM, YDMP=>YDGEOMETRY%YRMP,  YDHSLMER=>YDGEOMETRY%YRHSLMER, &

@@ -1,6 +1,9 @@
 SUBROUTINE LASCAW_CLO(KFLEV,&
  & KPROM,KST,KPROF,LDT,PDLO,PDLOMAD,PKAPPA,PKHTURB,PCLO,PCLOMAD,PCLOSLD,KSTPT,KSTSZ,PSTACK)
 
+
+#include "temp.h"
+
 !     ------------------------------------------------------------------
 
 !**** *LASCAW_CLO  -  Weights for semi-LAgrangian interpolator:
@@ -108,6 +111,7 @@ REAL(KIND=JPRB) :: FLAG1, FLAG2, FLAG3
 REAL(KIND=JPRB) :: FQUAD1, FQUAD2, FQUAD3
 
 ! weights for cubic Lagrange interpolation (regular nodes)
+
 FLAG1(PD)= 0.5_JPRB*(PD+1.0_JPRB)   *(PD-1.0_JPRB)*(PD-2.0_JPRB)
 FLAG2(PD)=-0.5_JPRB*(PD+1.0_JPRB)*PD              *(PD-2.0_JPRB)
 FLAG3(PD)= PP6_R   *(PD+1.0_JPRB)*PD*(PD-1.0_JPRB)
@@ -116,6 +120,8 @@ FLAG3(PD)= PP6_R   *(PD+1.0_JPRB)*PD*(PD-1.0_JPRB)
 FQUAD1(PD)=(1.0_JPRB-PD)*(1.0_JPRB+0.25_JPRB*PD)
 FQUAD2(PD)=PD*(1.25_JPRB-0.25_JPRB*PD)
 FQUAD3(PD)=0.25_JPRB*PD*(PD-1.0_JPRB)
+
+init_stack ()
 
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------

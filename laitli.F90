@@ -6,6 +6,9 @@ SUBROUTINE LAITLI(KPROMA,KPROMB,KST,KPROF,KFLEV,&
  & PDLAT,PDLO,KL0,PDVER,&
  & PXSL,PXF,KSTPT,KSTSZ,PSTACK)  
 
+
+#include "temp.h"
+
 !**** *LAITLI  -  semi-LAgrangian scheme:
 !                 Trilinear interpolations for one variable.
 
@@ -113,6 +116,11 @@ REAL(KIND=JPRB) :: ZDLAT, ZDLO1, ZDLO2, ZDVER, ZINF, ZINFLO1,&
 
 !*       1.    INTERPOLATIONS.
 !              ---------------
+
+init_stack ()
+
+
+
 
 IV1L1=1+KPROMA
 IV1L2=2+KPROMA

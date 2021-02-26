@@ -1,5 +1,8 @@
 SUBROUTINE ELARCHE(YDML_DYN,KPROMA,KST,KPROF,KFLEV,YDSL,YDEGSL,YDEGEO,YDGSGEOM,PSCO,PCCO,KSTPT,KSTSZ,PSTACK)
 
+
+#include "temp.h"
+
 !**** *ELARCHE  -  semi-Lagrangian scheme:
 !                  research of (lat,lon) coordinates of the origin point
 
@@ -123,10 +126,17 @@ LOGICAL :: LLCOMPUTE_OMVAK_O
 
 INTEGER(KIND=JPIM) :: JLEV, JROF
 
-REAL(KIND=JPRB) :: ZXX_TMP(KPROMA), ZYY_TMP(KPROMA), ZRR_TMP(KPROMA)
-REAL(KIND=JPRB) :: ZSINLAT_TMP(KPROMA), ZCOSLAT_TMP(KPROMA), ZLON_TMP(KPROMA)
-REAL(KIND=JPRB) :: ZSINLON_TMP(KPROMA)
 
+temp (REAL(KIND=JPRB), ZRR_TMP, (KPROMA))
+temp (REAL(KIND=JPRB), ZYY_TMP, (KPROMA))
+temp (REAL(KIND=JPRB), ZXX_TMP, (KPROMA))
+
+temp (REAL(KIND=JPRB), ZLON_TMP, (KPROMA))
+temp (REAL(KIND=JPRB), ZCOSLAT_TMP, (KPROMA))
+temp (REAL(KIND=JPRB), ZSINLAT_TMP, (KPROMA))
+
+
+temp (REAL(KIND=JPRB), ZSINLON_TMP, (KPROMA))
 REAL(KIND=JPRB) :: ZAA, ZBIN, ZCC, ZCCC, &
  & ZCODLAM, ZCOPHI, ZCOSCO, &
  & ZCOSLAT, ZCOSLATC, ZCOSLATP, ZCOSLATS, &
@@ -144,6 +154,18 @@ REAL(KIND=JPRB) :: ZEPS
 #include "abor1.intfb.h"
 
 ! ----------------------------------------------------------------------
+
+init_stack ()
+
+alloc (ZXX_TMP)
+alloc (ZYY_TMP)
+alloc (ZRR_TMP)
+alloc (ZSINLAT_TMP)
+alloc (ZCOSLAT_TMP)
+alloc (ZLON_TMP)
+alloc (ZSINLON_TMP)
+
+
 
 
 ASSOCIATE( &

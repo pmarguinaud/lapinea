@@ -8,6 +8,30 @@ use FindBin qw ($Bin);
 use lib $Bin;
 use Fxtran;
 
+
+sub pu_stmt
+{
+  my $pu = shift;
+
+  my $xpath = './f:' . &Fxtran::xpath_by_type ('stmt') 
+           . '|./f:' . &Fxtran::xpath_by_type ('construct') 
+           . '|./f:' . &Fxtran::xpath_by_type ('block');
+
+  my @stmt = &f ($xpath, $pu);
+
+  while (1)
+    {
+      last unless (my @i = reverse grep { $stmt[$_]->nodeName =~ m/-(?:construct|block)$/o } (0 .. $#stmt));
+      for my $i (@i)
+        {
+          splice (@stmt, $i, 1, &f ($xpath, $stmt[$i]));
+        }
+    }
+
+  return @stmt;
+}
+
+
 my $F90 = shift;
 
 my $doc = &Fxtran::fxtran (location => $F90);
@@ -38,7 +62,7 @@ for my $pu (@pu)
         my $stmt = &Fxtran::stmt ($en);
 
         my ($as) = &f ('.//f:array-spec', $stmt);
-        my @ss = &f ('.//f:array-spec//f:shape-spec', $stmt, 1);
+        my @ss = &f ('.//f:array-spec//f:shape-spec', $en, 1);
         next unless (@ss);
  
         next unless ($ss[0] =~ m/(%NPROMA$|^KPROMA$|^KPROMB$)/o);
@@ -63,29 +87,34 @@ for my $pu (@pu)
 
       }
     
-    my @stmt = &f ('./f:' . &Fxtran::xpath_by_type ('stmt'), $pu);
+    my @stmt = &pu_stmt ($pu);
 
-    for my $i (0 .. $#stmt-1)
+
+    for my $i (0 .. $#stmt)
       {
-        if (&Fxtran::stmt_is_executable ($stmt[$i+1]))
+        if (&Fxtran::stmt_is_executable ($stmt[$i]))
           {
             $stmt = $stmt[$i];
              last;
           }
       }
-    
-    ($cr) = &f ('following::text ()[contains (., "' . "\n" . '")]', $stmt);
+
+    ($cr) = &f ('(preceding::text ()[contains (., "' . "\n" . '")])[last ()]', $stmt);
    
-    $cr->parentNode->insertAfter (&t ("\n"), $cr);
+    $cr->parentNode->insertBefore (&t ("\n"), $cr);
+    $cr->parentNode->insertBefore (&t ("\n"), $cr);
+    $cr->parentNode->insertBefore (&t ("init_stack ()\n"), $cr);
+    $cr->parentNode->insertBefore (&t ("\n"), $cr);
     for (@name)
       {
-        $cr->parentNode->insertAfter (&t ("alloc ($_)\n"), $cr);
+        $cr->parentNode->insertBefore (&t ("alloc ($_)\n"), $cr);
       }
-    $cr->parentNode->insertAfter (&t ("\n"), $cr);
+    $cr->parentNode->insertBefore (&t ("\n"), $cr);
+    
     
 
 
   }
 
 
-'FileHandle'->new (">$F90")->print ($doc->textContent);
+'FileHandle'->new (">$F90.new")->print ($doc->textContent);

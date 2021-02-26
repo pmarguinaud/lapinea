@@ -80,6 +80,17 @@ EOF
       }
   }
 
+for my $h (grep { ! m/\.intfb\.h$/o } <*.h>)
+  {
+    (my $ok = $h) =~ s/\.h$/.ok/o;
+    $fh->print (<< "EOF");
+$ok: $h
+	touch $ok
+EOF
+  }
+
+my @subobj;
+
 for my $F90 (<*.F90>)
   {
     my @deps = &deps ($F90);
@@ -96,6 +107,8 @@ EOF
     my $kind = &kind ($F90);
     
     push @obj, $obj if ($kind ne 'PROGRAM');
+
+    push @subobj, $obj if ($kind ne 'MODULE');
   }
 
 for my $prg (@prg)
@@ -110,6 +123,9 @@ EOF
   }
 
 $fh->print (<< "EOF");
+
+subclean:
+	\\rm -f @subobj
 
 clean:
 	\\rm -f *.o *.xml *.a *.x *.mod

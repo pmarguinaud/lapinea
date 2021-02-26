@@ -1203,7 +1203,6 @@ sub stmt_is_executable
                 'implicit-none-stmt');
   my %noexec = map {($_, 1)} @noexec;
 
-
   if ($noexec{$stmt->nodeName})
     {
       return 0;
