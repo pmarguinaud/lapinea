@@ -7,5 +7,11 @@ FC = /home/mf/dp/marp/martinezs/apps/mkpack/support/wrapper/mimpifc-18.0.5.274 \
      -qopenmp -qopenmp-threadprivate compat -fp-model source -qopt-report=5 -qopt-report-phase=vec \
      -march=core-avx2 -Winline $(OPTS) -DUSE_STACK
 
+
+FC = pgf90 -byteswapio -Mlarge_arrays -fast -Minfo=accel,all,intensity,ccff -ta=tesla:managed -O0 -g -DUSE_STACK -ta=tesla:lineinfo
+FC = pgf90 -mp -byteswapio -Mlarge_arrays -Minfo=mp -mp -O0 -g -DUSE_STACK
+FC = pgf90 -mp -byteswapio -Mlarge_arrays -Minfo=mp -mp -O2 -g -DUSE_STACK
+
+
 all: wrap_lapinea.x
 
