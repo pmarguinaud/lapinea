@@ -66,7 +66,7 @@ REAL (KIND=JPRB)   , POINTER :: PGFLT1_OUT  (:,:,:,:)
 
 INTEGER :: IDUM, ILUN
 INTEGER :: NGPBLKS, NPROMA, NFLEVG
-INTEGER :: IST,IEND,IBL
+INTEGER :: IST,IEND,IBL,JLON
 
 
 CHARACTER (LEN=64) :: CLFILE, CLCASE
@@ -131,8 +131,36 @@ ALLOCATE (PSTACK (KSTSZ, NGPBLKS))
 
 #undef LOAD
 
-!$OMP PARALLEL DO SCHEDULE(DYNAMIC,1)&
-!$OMP&PRIVATE(IST,IEND,IBL)
+#ifdef USE_ACC
+
+!$acc parallel loop gang vector private (IBL, JLON, IST, IEND) collapse (2)
+
+  DO IBL = 1, NGPBLKS
+   
+    DO JLON = 1, NPROMA
+    IST=JLON
+    IEND=JLON
+
+    CALL LAPINEA(&
+     ! --- INPUT --------------------------------------------------------------
+     & YDGEOMETRY,YDML_GCONF,YDML_DYN,IST,IEND,YDSL,IBL,PB1,PB2(:,:,IBL),&
+     ! --- INPUT/OUTPUT -------------------------------------------------------
+     & KVSEPC(IBL),KVSEPL(IBL),&
+     ! --- OUTPUT -------------------------------------------------------------
+     & PCCO(:,:,:,IBL),PUF(:,:,IBL),PVF(:,:,IBL),&
+     & KL0(:,:,:,IBL),KLH0(:,:,:,IBL),PLSCAW(:,:,:,IBL),PRSCAW(:,:,:,IBL),&
+     & KL0H(:,:,:,IBL),PLSCAWH(:,:,:,IBL),PRSCAWH(:,:,:,IBL),&
+     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL),KSTPT,KSTSZ,PSTACK (:,IBL))
+    ENDDO
+
+  ENDDO
+
+!$acc end parallel loop 
+
+#else
+
+!#OMP PARALLEL DO SCHEDULE(DYNAMIC,1)&
+!#OMP&PRIVATE(IST,IEND,IBL)
   DO IBL = 1, NGPBLKS
    
     IST=1
@@ -151,7 +179,9 @@ ALLOCATE (PSTACK (KSTSZ, NGPBLKS))
 
   ENDDO
 
-!$OMP END PARALLEL DO
+!#OMP END PARALLEL DO
+
+#endif
 
 
 IF (LLDIFF) THEN
