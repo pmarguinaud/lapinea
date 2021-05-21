@@ -6,3 +6,4 @@
 *.xml
 *.intfb.h
 *.ok
+slurm-*.out

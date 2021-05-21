@@ -10,8 +10,12 @@ FC = /home/mf/dp/marp/martinezs/apps/mkpack/support/wrapper/mimpifc-18.0.5.274 \
 
 FC = pgf90 -mp -byteswapio -Mlarge_arrays -Minfo=mp -mp -O0 -g -DUSE_STACK
 FC = pgf90 -mp -byteswapio -Mlarge_arrays -Minfo=mp -mp -O2 -g -DUSE_STACK
-FC = pgf90 -acc -byteswapio -Mlarge_arrays -fast -Minfo=accel,all,intensity,ccff -ta=tesla:managed -O3 -g -DUSE_STACK -ta=tesla:lineinfo -DUSE_ACC  -lcudafor -lcudart -lcudafor101 -lcublas -lcudanvhpc
+FC = pgf90 -acc -byteswapio -Mlarge_arrays -fast -Minfo=accel,all,intensity,ccff -O3 -g -DUSE_STACK -ta=tesla:lineinfo -DUSE_ACC  \
+     -L/gpfslocalsys/nvhpc/20.11/Linux_x86_64/20.11/cuda/10.2/lib64 -Wl,-rpath,/gpfslocalsys/nvhpc/20.11/Linux_x86_64/20.11/cuda/10.2/lib64 \
+     -L/gpfslocalsys/nvhpc/20.11/Linux_x86_64/20.11/math_libs/10.2/lib64 -Wl,-rpath,/gpfslocalsys/nvhpc/20.11/Linux_x86_64/20.11/math_libs/10.2/lib64 \
+     -lcudafor -lcudart -lcudafor101 -lcublas -lcudanvhpc 
+   
 
 
-all: wrap_lapinea.x
+all: wrap_lapinea.x test.x test_sl_struct.x
 
