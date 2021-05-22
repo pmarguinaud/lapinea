@@ -26,7 +26,7 @@ sub deps
       my $code = &slurp ($f);
       my @inc = ($code =~ m/\n\s*#include\s+"(.*?)"/goms);
       my @use = ($code =~ m/\n\s*use\s+(\w+)/gomis);
-      my @mod = map { lc ($_) . '.o' } @use;
+      my @mod = grep { $_ ne 'cudafor.o' } map { lc ($_) . '.o' } @use;
       $deps{$f} = [@mod, @inc];
    }
 
