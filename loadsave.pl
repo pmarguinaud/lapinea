@@ -12,9 +12,9 @@ my %opts = ('dir' => 'src/local/ifsaux/module', skip => [], types => 0, vars => 
 
 sub process_decl
 {
-  my ($en_decl, $sname, $prefix, $BODY_SAVE, $BODY_LOAD, $U, $J, $L, $B) = @_;
+  my ($en_decl, $sname, $prefix, $BODY_SAVE, $BODY_LOAD, $BODY_COPY, $U, $J, $L, $B) = @_;
 
-  my (@BODY_SAVE, @BODY_LOAD);
+  my (@BODY_SAVE, @BODY_LOAD, @BODY_COPY);
   my (%U, %J, %L, %B);
 
   my $stmt = &Fxtran::stmt ($en_decl);
@@ -69,31 +69,37 @@ sub process_decl
         {
           push @BODY_LOAD, "ALLOCATE ($prefix$name)\n";
         }
+      push @BODY_COPY, "!\$acc enter data create ($prefix$name)\n";
     }
   
+
   if ($intrinsic)
     {
       push @BODY_SAVE, "WRITE (KLUN) $prefix$name\n";
       push @BODY_LOAD, "READ (KLUN) $prefix$name\n";
+      push @BODY_COPY, "!\$acc update device ($prefix$name)\n",
     }
   else 
     {
-      
       for (my $i = $#ss+1; $i >= 1; $i--)
         {
           $J{"J$i"} = 1;
           my $do = "DO J$i = LBOUND ($prefix$name, $i), UBOUND ($prefix$name, $i)\n";
           push @BODY_SAVE, $do;
           push @BODY_LOAD, $do;
+          push @BODY_COPY, $do;
         }
       push @BODY_SAVE, ('  ' x scalar (@ss)) 
                    . "CALL SAVE (KLUN, $prefix$name" . (@ss ? " (" . join (', ', map { "J$_"  } (1 .. $#ss+1)) . ")" : '' ) . ")\n";
       push @BODY_LOAD, ('  ' x scalar (@ss)) 
                    . "CALL LOAD (KLUN, $prefix$name" . (@ss ? " (" . join (', ', map { "J$_"  } (1 .. $#ss+1)) . ")" : '' ) . ")\n";
+      push @BODY_COPY, ('  ' x scalar (@ss)) 
+                   . "CALL COPY ($prefix$name" . (@ss ? " (" . join (', ', map { "J$_"  } (1 .. $#ss+1)) . ")" : '' ) . ")\n";
       for (my $i = $#ss; $i >= 0; $i--)
         {
           push @BODY_SAVE, "ENDDO\n";
           push @BODY_LOAD, "ENDDO\n";
+          push @BODY_COPY, "ENDDO\n";
         }
     }
   
@@ -105,12 +111,15 @@ sub process_decl
           push @BODY_LOAD, "ELSE\n", "NULLIFY ($prefix$name)\n";
         }
       push @BODY_LOAD, "ENDIF\n";
+      push @BODY_COPY, "!\$acc enter data attach ($prefix$name)\n";
     }
+  push @BODY_COPY, "\n";
 
 RETURN:
   
   push @$BODY_SAVE, @BODY_SAVE;
   push @$BODY_LOAD, @BODY_LOAD;
+  push @$BODY_COPY, @BODY_COPY;
 
   %$U = (%$U, %U); %$J = (%$J, %J); 
   %$L = (%$L, %L); %$B = (%$B, %B); 
@@ -157,6 +166,7 @@ sub process_types
     {
       my ($INTERFACE_SAVE, $CONTAINS_SAVE) = ('', '');
       my ($INTERFACE_LOAD, $CONTAINS_LOAD) = ('', '');
+      my ($INTERFACE_COPY, $CONTAINS_COPY) = ('', '');
   
       my ($name) = &f ('.//f:T-stmt/f:T-N/f:N/f:n/text ()', $tconst, 1);
       my $tname = $name;
@@ -164,23 +174,26 @@ sub process_types
   
       $INTERFACE_SAVE .= "MODULE PROCEDURE SAVE_$name\n";
       $INTERFACE_LOAD .= "MODULE PROCEDURE LOAD_$name\n";
+      $INTERFACE_COPY .= "MODULE PROCEDURE COPY_$name\n";
   
-      my (@BODY_SAVE, @BODY_LOAD);
+      my (@BODY_SAVE, @BODY_LOAD, @BODY_COPY);
       my (%U, %J, %L, %B);
   
       my @en_decl = &f ('.//f:EN-decl', $tconst);
       for my $en_decl (@en_decl)
         {
-          &process_decl ($en_decl, "$tname%", 'YD%', \@BODY_SAVE, \@BODY_LOAD, \%U, \%J, \%L, \%B);
+          &process_decl ($en_decl, "$tname%", 'YD%', \@BODY_SAVE, \@BODY_LOAD, \@BODY_COPY, \%U, \%J, \%L, \%B);
         }
   
       my $DECL_SAVE = '';
       my $DECL_LOAD = '';
+      my $DECL_COPY = '';
   
       if (%J)
         {
           $DECL_SAVE .= "INTEGER :: " . join (', ', sort keys (%J)) . "\n";
           $DECL_LOAD .= "INTEGER :: " . join (', ', sort keys (%J)) . "\n";
+          $DECL_COPY .= "INTEGER :: " . join (', ', sort keys (%J)) . "\n";
         }
       if (%B)
         {
@@ -194,8 +207,9 @@ sub process_types
   
       my $USE_SAVE = join ('', map { "USE SAVE_${_}_MOD\n" } grep { $_ ne $name } sort keys (%U));
       my $USE_LOAD = join ('', map { "USE LOAD_${_}_MOD\n" } grep { $_ ne $name } sort keys (%U));
+      my $USE_COPY = join ('', map { "USE COPY_${_}_MOD\n" } grep { $_ ne $name } sort keys (%U));
   
-      for ($USE_SAVE, $USE_SAVE, $DECL_SAVE, $DECL_LOAD)
+      for ($USE_SAVE, $USE_SAVE, $USE_COPY, $DECL_SAVE, $DECL_LOAD)
         {
           chomp ($_);
         }
@@ -216,14 +230,23 @@ INTEGER, INTENT (IN) :: KLUN
 TYPE ($name), INTENT (OUT) :: YD
 EOF
 
+      $CONTAINS_COPY .= << "EOF";
+SUBROUTINE COPY_$name (YD)
+$USE_COPY
+IMPLICIT NONE
+TYPE ($name), INTENT (IN) :: YD
+EOF
+
       &indent (@BODY_SAVE);
       &indent (@BODY_LOAD);
+      &indent (@BODY_COPY);
 
 
       $CONTAINS_SAVE .= $DECL_SAVE . "\n" . join ("\n", @BODY_SAVE, '') . "END SUBROUTINE\n";
       $CONTAINS_LOAD .= $DECL_LOAD . "\n" . join ("\n", @BODY_LOAD, '') . "END SUBROUTINE\n";
+      $CONTAINS_COPY .= $DECL_COPY . "\n" . join ("\n", @BODY_COPY, '') . "END SUBROUTINE\n";
 
-      for ($CONTAINS_SAVE, $CONTAINS_SAVE, $INTERFACE_SAVE, $INTERFACE_LOAD)
+      for ($CONTAINS_SAVE, $CONTAINS_SAVE, $CONTAINS_COPY, $INTERFACE_SAVE, $INTERFACE_LOAD, $INTERFACE_COPY)
         {
           chomp ($_);
         }
@@ -258,6 +281,22 @@ END INTERFACE
 CONTAINS
 
 $CONTAINS_LOAD
+
+END MODULE
+EOF
+
+      &w ("$opts{dir}/copy_${n}_mod.F90", << "EOF");
+MODULE COPY_${name}_MOD
+
+USE $mod, ONLY : $name
+
+INTERFACE COPY
+$INTERFACE_COPY
+END INTERFACE
+
+CONTAINS
+
+$CONTAINS_COPY
 
 END MODULE
 EOF

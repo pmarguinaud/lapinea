@@ -4,6 +4,12 @@ USE LOAD_GEOMETRY_MOD
 USE LOAD_SL_STRUCT_MOD
 USE LOAD_MODEL_GENERAL_CONF_TYPE_MOD
 USE LOAD_MODEL_DYNAMICS_TYPE_MOD
+
+USE COPY_GEOMETRY_MOD
+USE COPY_SL_STRUCT_MOD
+USE COPY_MODEL_GENERAL_CONF_TYPE_MOD
+USE COPY_MODEL_DYNAMICS_TYPE_MOD
+
 USE LOAD_MOD
 #ifdef USE_ACC
 USE CUDAFOR
@@ -139,6 +145,16 @@ LOAD (PRSCAWH) = 0
 LOAD (PSCO) = 0
 LOAD (PGFLT1) = 0
 
+
+!$acc enter data create (YDGEOMETRY) 
+CALL COPY (YDGEOMETRY) 
+!$acc enter data create (YDML_GCONF) 
+CALL COPY (YDML_GCONF)
+!$acc enter data create (YDSL) 
+CALL COPY (YDSL) 
+!$acc enter data create (YDML_DYN) 
+CALL COPY (YDML_DYN) 
+
 IF (ICOUNT == 0) ICOUNT = SIZE (KVSEPC)
 
 NGPBLKS = MIN (SIZE (KVSEPC), ICOUNT)
@@ -159,7 +175,11 @@ DO ITIME = 1, NTIMES
 
 #ifdef USE_ACC
 
-!$acc parallel loop gang vector private (IBL, JLON, IST, IEND) collapse (2) vector_length (NPROMA)
+!$acc parallel loop gang vector private (IBL, JLON, IST, IEND) collapse (2) vector_length (NPROMA) &
+!$acc & present (YDGEOMETRY, YDML_GCONF, YDSL, YDML_DYN) copyin (PB1, PB2) &
+!$acc & copy (KVSEPC, KVSEPL) &
+!$acc & copyout (PCCO, PUF, PVF, KL0, KLH0, PLSCAW, PRSCAW, KL0H, PLSCAWH, PRSCAWH, PSCO,PGFLT1) &
+!$acc & create (PSTACK)
 
   DO IBL = 1, NGPBLKS
    

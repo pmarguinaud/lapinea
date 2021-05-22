@@ -1,0 +1,46 @@
+PROGRAM MAIN
+
+USE LOAD_MODEL_GENERAL_CONF_TYPE_MOD
+USE COPY_MODEL_GENERAL_CONF_TYPE_MOD
+
+IMPLICIT NONE
+
+TYPE (MODEL_GENERAL_CONF_TYPE) :: YDML_GCONF
+
+#define _PP_MODEL_GENERAL_CONF_TYPE_ PR_MODEL_GENERAL_CONF_TYPE_CPU
+#include "pp_model_general_conf.intf.h"
+#undef _PP_MODEL_GENERAL_CONF_TYPE_
+
+#define _PP_MODEL_GENERAL_CONF_TYPE_ PR_MODEL_GENERAL_CONF_TYPE_GPU
+!$acc routine(PR_MODEL_GENERAL_CONF_TYPE_GPU) seq
+#include "pp_model_general_conf.intf.h"
+#undef _PP_MODEL_GENERAL_CONF_TYPE_
+
+OPEN (77, FILE="data.8/YDML_GCONF.IN.001", FORM='UNFORMATTED')
+CALL LOAD (77, YDML_GCONF) 
+CLOSE (77)
+
+
+CALL PR_MODEL_GENERAL_CONF_TYPE_CPU (YDML_GCONF)
+
+PRINT *, '-----------------------------------------'
+
+CALL FLUSH 
+
+!$acc enter data create (YDML_GCONF)
+CALL COPY (YDML_GCONF)
+
+!$acc kernels present (YDML_GCONF)
+CALL PR_MODEL_GENERAL_CONF_TYPE_GPU (YDML_GCONF)
+!$acc end kernels
+
+END
+
+#define _PP_MODEL_GENERAL_CONF_TYPE_ PR_MODEL_GENERAL_CONF_TYPE_CPU
+#include "pp_model_general_conf.body.h"
+#undef _PP_MODEL_GENERAL_CONF_TYPE_
+
+#define _PP_MODEL_GENERAL_CONF_TYPE_ PR_MODEL_GENERAL_CONF_TYPE_GPU
+!$acc routine(PR_MODEL_GENERAL_CONF_TYPE_GPU) seq
+#include "pp_model_general_conf.body.h"
+#undef _PP_MODEL_GENERAL_CONF_TYPE_
