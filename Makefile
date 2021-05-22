@@ -32,10 +32,155 @@ lascaw_vintw.intfb.ok: lascaw_vintw.intfb.h parkind1.o yomdyna.o yomdyn.o eint_m
 
 create.ok: create.h
 	touch create.ok
+pp_sl_struct.body.ok: pp_sl_struct.body.h
+	touch pp_sl_struct.body.ok
+pp_sl_struct.intf.ok: pp_sl_struct.intf.h
+	touch pp_sl_struct.intf.ok
 temp.ok: temp.h
 	touch temp.ok
 abor1.o: abor1.F90 
 	$(FC) -c abor1.F90
+
+copy_geometry_mod.o: copy_geometry_mod.F90 type_geometry.o copy_tcsgeom_mod.o copy_tcsgleg_mod.o copy_tdim_mod.o copy_tdimv_mod.o copy_tedim_mod.o copy_tegeo_mod.o copy_tegsl_mod.o copy_telbc_geo_mod.o copy_temmp_mod.o copy_tgem_mod.o copy_tgsgeom_mod.o copy_thslmer_mod.o copy_tlap_mod.o copy_tlep_mod.o copy_tmp_mod.o copy_torog_mod.o copy_tspgeom_mod.o copy_tsta_mod.o copy_tvab_mod.o copy_tvertical_geom_mod.o copy_tveta_mod.o copy_tvfe_mod.o copy_tvsleta_mod.o copy_tvsplip_mod.o
+	$(FC) -c copy_geometry_mod.F90
+
+copy_model_dynamics_type_mod.o: copy_model_dynamics_type_mod.F90 model_dynamics_mod.o copy_sl_struct_mod.o copy_tcco_mod.o copy_tdyn_mod.o copy_tedyn_mod.o copy_tlscaw_mod.o copy_tptrgppc_mod.o copy_tptrslb1_mod.o copy_tptrslb15_mod.o copy_tptrslb2_mod.o copy_trscaw_mod.o copy_tsco_mod.o copy_tslrep_mod.o copy_tspng_mod.o copy_ttnh_mod.o
+	$(FC) -c copy_model_dynamics_type_mod.F90
+
+copy_model_general_conf_type_mod.o: copy_model_general_conf_type_mod.F90 model_general_conf_mod.o copy_tdimf_mod.o copy_trip_mod.o copy_type_gfld_mod.o
+	$(FC) -c copy_model_general_conf_type_mod.F90
+
+copy_sl_struct_mod.o: copy_sl_struct_mod.F90 eint_mod.o
+	$(FC) -c copy_sl_struct_mod.F90
+
+copy_tcco_mod.o: copy_tcco_mod.F90 intdynsl_mod.o
+	$(FC) -c copy_tcco_mod.F90
+
+copy_tcsgeom_mod.o: copy_tcsgeom_mod.F90 yomcsgeom.o
+	$(FC) -c copy_tcsgeom_mod.F90
+
+copy_tcsgleg_mod.o: copy_tcsgleg_mod.F90 yomleg.o
+	$(FC) -c copy_tcsgleg_mod.F90
+
+copy_tdim_mod.o: copy_tdim_mod.F90 yomdim.o
+	$(FC) -c copy_tdim_mod.F90
+
+copy_tdimf_mod.o: copy_tdimf_mod.F90 yomdimf.o
+	$(FC) -c copy_tdimf_mod.F90
+
+copy_tdimv_mod.o: copy_tdimv_mod.F90 yomdimv.o
+	$(FC) -c copy_tdimv_mod.F90
+
+copy_tdyn_mod.o: copy_tdyn_mod.F90 yomdyn.o
+	$(FC) -c copy_tdyn_mod.F90
+
+copy_tedim_mod.o: copy_tedim_mod.F90 yemdim.o
+	$(FC) -c copy_tedim_mod.F90
+
+copy_tedyn_mod.o: copy_tedyn_mod.F90 yemdyn.o
+	$(FC) -c copy_tedyn_mod.F90
+
+copy_tegeo_mod.o: copy_tegeo_mod.F90 yemgeo.o
+	$(FC) -c copy_tegeo_mod.F90
+
+copy_tegsl_mod.o: copy_tegsl_mod.F90 yemgsl.o
+	$(FC) -c copy_tegsl_mod.F90
+
+copy_telbc_geo_mod.o: copy_telbc_geo_mod.F90 yemlbc_geo.o
+	$(FC) -c copy_telbc_geo_mod.F90
+
+copy_temmp_mod.o: copy_temmp_mod.F90 yemmp.o
+	$(FC) -c copy_temmp_mod.F90
+
+copy_tgem_mod.o: copy_tgem_mod.F90 yomgem.o
+	$(FC) -c copy_tgem_mod.F90
+
+copy_tgsgeom_mod.o: copy_tgsgeom_mod.F90 yomgsgeom.o
+	$(FC) -c copy_tgsgeom_mod.F90
+
+copy_thslmer_mod.o: copy_thslmer_mod.F90 yomhslmer.o
+	$(FC) -c copy_thslmer_mod.F90
+
+copy_tlap_mod.o: copy_tlap_mod.F90 yomlap.o
+	$(FC) -c copy_tlap_mod.F90
+
+copy_tlep_mod.o: copy_tlep_mod.F90 yemlap.o
+	$(FC) -c copy_tlep_mod.F90
+
+copy_tlscaw_mod.o: copy_tlscaw_mod.F90 intdynsl_mod.o
+	$(FC) -c copy_tlscaw_mod.F90
+
+copy_tmp_mod.o: copy_tmp_mod.F90 yommp.o
+	$(FC) -c copy_tmp_mod.F90
+
+copy_torog_mod.o: copy_torog_mod.F90 yomorog.o
+	$(FC) -c copy_torog_mod.F90
+
+copy_tptrgppc_mod.o: copy_tptrgppc_mod.F90 ptrgppc.o
+	$(FC) -c copy_tptrgppc_mod.F90
+
+copy_tptrslb15_mod.o: copy_tptrslb15_mod.F90 ptrslb15.o
+	$(FC) -c copy_tptrslb15_mod.F90
+
+copy_tptrslb1_mod.o: copy_tptrslb1_mod.F90 ptrslb1.o
+	$(FC) -c copy_tptrslb1_mod.F90
+
+copy_tptrslb2_mod.o: copy_tptrslb2_mod.F90 ptrslb2.o
+	$(FC) -c copy_tptrslb2_mod.F90
+
+copy_trip_mod.o: copy_trip_mod.F90 yomrip.o
+	$(FC) -c copy_trip_mod.F90
+
+copy_trscaw_mod.o: copy_trscaw_mod.F90 intdynsl_mod.o
+	$(FC) -c copy_trscaw_mod.F90
+
+copy_tsco_mod.o: copy_tsco_mod.F90 intdynsl_mod.o
+	$(FC) -c copy_tsco_mod.F90
+
+copy_tslrep_mod.o: copy_tslrep_mod.F90 yomslrep.o
+	$(FC) -c copy_tslrep_mod.F90
+
+copy_tspgeom_mod.o: copy_tspgeom_mod.F90 type_spgeom.o
+	$(FC) -c copy_tspgeom_mod.F90
+
+copy_tspng_mod.o: copy_tspng_mod.F90 spng_mod.o
+	$(FC) -c copy_tspng_mod.F90
+
+copy_tsta_mod.o: copy_tsta_mod.F90 yomsta.o
+	$(FC) -c copy_tsta_mod.F90
+
+copy_ttnh_mod.o: copy_ttnh_mod.F90 yomtnh.o
+	$(FC) -c copy_ttnh_mod.F90
+
+copy_tvab_mod.o: copy_tvab_mod.F90 yomvert.o
+	$(FC) -c copy_tvab_mod.F90
+
+copy_tvertical_geom_mod.o: copy_tvertical_geom_mod.F90 yomvert.o copy_tvab_mod.o copy_tveta_mod.o copy_tvfe_mod.o
+	$(FC) -c copy_tvertical_geom_mod.F90
+
+copy_tveta_mod.o: copy_tveta_mod.F90 yomvert.o
+	$(FC) -c copy_tveta_mod.F90
+
+copy_tvfe_mod.o: copy_tvfe_mod.F90 yomvert.o
+	$(FC) -c copy_tvfe_mod.F90
+
+copy_tvsleta_mod.o: copy_tvsleta_mod.F90 yomvsleta.o
+	$(FC) -c copy_tvsleta_mod.F90
+
+copy_tvsplip_mod.o: copy_tvsplip_mod.F90 yomvsplip.o
+	$(FC) -c copy_tvsplip_mod.F90
+
+copy_type_aero_wvl_diag_mod.o: copy_type_aero_wvl_diag_mod.F90 yoe_aerodiag.o
+	$(FC) -c copy_type_aero_wvl_diag_mod.F90
+
+copy_type_gfl_comp_mod.o: copy_type_gfl_comp_mod.F90 yom_ygfl.o
+	$(FC) -c copy_type_gfl_comp_mod.F90
+
+copy_type_gfl_naml_mod.o: copy_type_gfl_naml_mod.F90 yom_ygfl.o
+	$(FC) -c copy_type_gfl_naml_mod.F90
+
+copy_type_gfld_mod.o: copy_type_gfld_mod.F90 yom_ygfl.o copy_type_gfl_comp_mod.o copy_type_gfl_naml_mod.o
+	$(FC) -c copy_type_gfld_mod.F90
 
 crmdims.o: crmdims.F90 parkind1.o
 	$(FC) -c crmdims.F90
@@ -88,7 +233,7 @@ load_model_dynamics_type_mod.o: load_model_dynamics_type_mod.F90 model_dynamics_
 load_model_general_conf_type_mod.o: load_model_general_conf_type_mod.F90 model_general_conf_mod.o load_tdimf_mod.o load_trip_mod.o load_type_gfld_mod.o
 	$(FC) -c load_model_general_conf_type_mod.F90
 
-load_sl_struct_mod.o: load_sl_struct_mod.F90 eint_mod.o 
+load_sl_struct_mod.o: load_sl_struct_mod.F90 eint_mod.o
 	$(FC) -c load_sl_struct_mod.F90
 
 load_tcco_mod.o: load_tcco_mod.F90 intdynsl_mod.o
@@ -265,6 +410,9 @@ ptrslb2.o: ptrslb2.F90 parkind1.o
 spng_mod.o: spng_mod.F90 parkind1.o yomcst.o yomct0.o yomlun.o
 	$(FC) -c spng_mod.F90
 
+test_sl_struct.o: test_sl_struct.F90 eint_mod.o load_sl_struct_mod.o copy_sl_struct_mod.o pp_sl_struct.intf.ok pp_sl_struct.intf.ok pp_sl_struct.body.ok pp_sl_struct.body.ok
+	$(FC) -c test_sl_struct.F90
+
 type_geometry.o: type_geometry.F90 yomvert.o yomsta.o yomlap.o yomleg.o yomdim.o yomdimv.o yommp.o yomgem.o yomvsplip.o yomvsleta.o yomhslmer.o yomcsgeom.o yomgsgeom.o yomorog.o type_spgeom.o yemdim.o yemgeo.o yemmp.o yemlap.o yemgsl.o yemlbc_geo.o
 	$(FC) -c type_geometry.F90
 
@@ -273,12 +421,6 @@ type_spgeom.o: type_spgeom.F90 parkind1.o
 
 wrap_lapinea.o: wrap_lapinea.F90 load_geometry_mod.o load_sl_struct_mod.o load_model_general_conf_type_mod.o load_model_dynamics_type_mod.o load_mod.o load_yomct0_mod.o load_yomdyna_mod.o load_yomcver_mod.o load_yomcst_mod.o load_yommp0_mod.o load_yomlun_mod.o load_yomjfh_mod.o xrd_getoptions.o parkind1.o lapinea.intfb.ok
 	$(FC) -c wrap_lapinea.F90
-
-test.o: test.F90 load_geometry_mod.o load_sl_struct_mod.o load_model_general_conf_type_mod.o load_model_dynamics_type_mod.o load_mod.o load_yomct0_mod.o load_yomdyna_mod.o load_yomcver_mod.o load_yomcst_mod.o load_yommp0_mod.o load_yomlun_mod.o load_yomjfh_mod.o xrd_getoptions.o parkind1.o lapinea.intfb.ok
-	$(FC) -c test.F90
-
-test_sl_struct.o: pp_sl_struct.h pp_sl_struct.F90 test_sl_struct.F90 load_geometry_mod.o load_sl_struct_mod.o load_model_general_conf_type_mod.o load_model_dynamics_type_mod.o load_mod.o load_yomct0_mod.o load_yomdyna_mod.o load_yomcver_mod.o load_yomcst_mod.o load_yommp0_mod.o load_yomlun_mod.o load_yomjfh_mod.o xrd_getoptions.o parkind1.o lapinea.intfb.ok
-	$(FC) -c test_sl_struct.F90
 
 xrd_getoptions.o: xrd_getoptions.F90 parkind1.o xrd_unix_env.o
 	$(FC) -c xrd_getoptions.F90
@@ -394,19 +536,15 @@ yomvsleta.o: yomvsleta.F90 parkind1.o
 yomvsplip.o: yomvsplip.F90 parkind1.o
 	$(FC) -c yomvsplip.F90
 
-wrap_lapinea.x: wrap_lapinea.o abor1.o crmdims.o eint_mod.o elarche.o elarmes.o elascaw.o geometry_mod.o intdynsl_mod.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
-	$(FC) -o wrap_lapinea.x wrap_lapinea.o abor1.o crmdims.o eint_mod.o elarche.o elarmes.o elascaw.o geometry_mod.o intdynsl_mod.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
+test_sl_struct.x: test_sl_struct.o abor1.o copy_geometry_mod.o copy_model_dynamics_type_mod.o copy_model_general_conf_type_mod.o copy_sl_struct_mod.o copy_tcco_mod.o copy_tcsgeom_mod.o copy_tcsgleg_mod.o copy_tdim_mod.o copy_tdimf_mod.o copy_tdimv_mod.o copy_tdyn_mod.o copy_tedim_mod.o copy_tedyn_mod.o copy_tegeo_mod.o copy_tegsl_mod.o copy_telbc_geo_mod.o copy_temmp_mod.o copy_tgem_mod.o copy_tgsgeom_mod.o copy_thslmer_mod.o copy_tlap_mod.o copy_tlep_mod.o copy_tlscaw_mod.o copy_tmp_mod.o copy_torog_mod.o copy_tptrgppc_mod.o copy_tptrslb15_mod.o copy_tptrslb1_mod.o copy_tptrslb2_mod.o copy_trip_mod.o copy_trscaw_mod.o copy_tsco_mod.o copy_tslrep_mod.o copy_tspgeom_mod.o copy_tspng_mod.o copy_tsta_mod.o copy_ttnh_mod.o copy_tvab_mod.o copy_tvertical_geom_mod.o copy_tveta_mod.o copy_tvfe_mod.o copy_tvsleta_mod.o copy_tvsplip_mod.o copy_type_aero_wvl_diag_mod.o copy_type_gfl_comp_mod.o copy_type_gfl_naml_mod.o copy_type_gfld_mod.o crmdims.o eint_mod.o elarche.o elarmes.o elascaw.o geometry_mod.o intdynsl_mod.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
+	$(FC) -o test_sl_struct.x test_sl_struct.o abor1.o copy_geometry_mod.o copy_model_dynamics_type_mod.o copy_model_general_conf_type_mod.o copy_sl_struct_mod.o copy_tcco_mod.o copy_tcsgeom_mod.o copy_tcsgleg_mod.o copy_tdim_mod.o copy_tdimf_mod.o copy_tdimv_mod.o copy_tdyn_mod.o copy_tedim_mod.o copy_tedyn_mod.o copy_tegeo_mod.o copy_tegsl_mod.o copy_telbc_geo_mod.o copy_temmp_mod.o copy_tgem_mod.o copy_tgsgeom_mod.o copy_thslmer_mod.o copy_tlap_mod.o copy_tlep_mod.o copy_tlscaw_mod.o copy_tmp_mod.o copy_torog_mod.o copy_tptrgppc_mod.o copy_tptrslb15_mod.o copy_tptrslb1_mod.o copy_tptrslb2_mod.o copy_trip_mod.o copy_trscaw_mod.o copy_tsco_mod.o copy_tslrep_mod.o copy_tspgeom_mod.o copy_tspng_mod.o copy_tsta_mod.o copy_ttnh_mod.o copy_tvab_mod.o copy_tvertical_geom_mod.o copy_tveta_mod.o copy_tvfe_mod.o copy_tvsleta_mod.o copy_tvsplip_mod.o copy_type_aero_wvl_diag_mod.o copy_type_gfl_comp_mod.o copy_type_gfl_naml_mod.o copy_type_gfld_mod.o crmdims.o eint_mod.o elarche.o elarmes.o elascaw.o geometry_mod.o intdynsl_mod.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
 
-
-test.x: test.o crmdims.o eint_mod.o geometry_mod.o intdynsl_mod.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
-	$(FC) -o test.x test.o crmdims.o eint_mod.o geometry_mod.o intdynsl_mod.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
-
-test_sl_struct.x: test_sl_struct.o crmdims.o eint_mod.o geometry_mod.o intdynsl_mod.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
-	$(FC) -o test_sl_struct.x test_sl_struct.o crmdims.o eint_mod.o geometry_mod.o intdynsl_mod.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
+wrap_lapinea.x: wrap_lapinea.o abor1.o copy_geometry_mod.o copy_model_dynamics_type_mod.o copy_model_general_conf_type_mod.o copy_sl_struct_mod.o copy_tcco_mod.o copy_tcsgeom_mod.o copy_tcsgleg_mod.o copy_tdim_mod.o copy_tdimf_mod.o copy_tdimv_mod.o copy_tdyn_mod.o copy_tedim_mod.o copy_tedyn_mod.o copy_tegeo_mod.o copy_tegsl_mod.o copy_telbc_geo_mod.o copy_temmp_mod.o copy_tgem_mod.o copy_tgsgeom_mod.o copy_thslmer_mod.o copy_tlap_mod.o copy_tlep_mod.o copy_tlscaw_mod.o copy_tmp_mod.o copy_torog_mod.o copy_tptrgppc_mod.o copy_tptrslb15_mod.o copy_tptrslb1_mod.o copy_tptrslb2_mod.o copy_trip_mod.o copy_trscaw_mod.o copy_tsco_mod.o copy_tslrep_mod.o copy_tspgeom_mod.o copy_tspng_mod.o copy_tsta_mod.o copy_ttnh_mod.o copy_tvab_mod.o copy_tvertical_geom_mod.o copy_tveta_mod.o copy_tvfe_mod.o copy_tvsleta_mod.o copy_tvsplip_mod.o copy_type_aero_wvl_diag_mod.o copy_type_gfl_comp_mod.o copy_type_gfl_naml_mod.o copy_type_gfld_mod.o crmdims.o eint_mod.o elarche.o elarmes.o elascaw.o geometry_mod.o intdynsl_mod.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
+	$(FC) -o wrap_lapinea.x wrap_lapinea.o abor1.o copy_geometry_mod.o copy_model_dynamics_type_mod.o copy_model_general_conf_type_mod.o copy_sl_struct_mod.o copy_tcco_mod.o copy_tcsgeom_mod.o copy_tcsgleg_mod.o copy_tdim_mod.o copy_tdimf_mod.o copy_tdimv_mod.o copy_tdyn_mod.o copy_tedim_mod.o copy_tedyn_mod.o copy_tegeo_mod.o copy_tegsl_mod.o copy_telbc_geo_mod.o copy_temmp_mod.o copy_tgem_mod.o copy_tgsgeom_mod.o copy_thslmer_mod.o copy_tlap_mod.o copy_tlep_mod.o copy_tlscaw_mod.o copy_tmp_mod.o copy_torog_mod.o copy_tptrgppc_mod.o copy_tptrslb15_mod.o copy_tptrslb1_mod.o copy_tptrslb2_mod.o copy_trip_mod.o copy_trscaw_mod.o copy_tsco_mod.o copy_tslrep_mod.o copy_tspgeom_mod.o copy_tspng_mod.o copy_tsta_mod.o copy_ttnh_mod.o copy_tvab_mod.o copy_tvertical_geom_mod.o copy_tveta_mod.o copy_tvfe_mod.o copy_tvsleta_mod.o copy_tvsplip_mod.o copy_type_aero_wvl_diag_mod.o copy_type_gfl_comp_mod.o copy_type_gfl_naml_mod.o copy_type_gfld_mod.o crmdims.o eint_mod.o elarche.o elarmes.o elascaw.o geometry_mod.o intdynsl_mod.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o load_geometry_mod.o load_mod.o load_model_dynamics_type_mod.o load_model_general_conf_type_mod.o load_sl_struct_mod.o load_tcco_mod.o load_tcsgeom_mod.o load_tcsgleg_mod.o load_tdim_mod.o load_tdimf_mod.o load_tdimv_mod.o load_tdyn_mod.o load_tedim_mod.o load_tedyn_mod.o load_tegeo_mod.o load_tegsl_mod.o load_telbc_geo_mod.o load_temmp_mod.o load_tgem_mod.o load_tgsgeom_mod.o load_thslmer_mod.o load_tlap_mod.o load_tlep_mod.o load_tlscaw_mod.o load_tmp_mod.o load_torog_mod.o load_tptrgppc_mod.o load_tptrslb15_mod.o load_tptrslb1_mod.o load_tptrslb2_mod.o load_trip_mod.o load_trscaw_mod.o load_tsco_mod.o load_tslrep_mod.o load_tspgeom_mod.o load_tspng_mod.o load_tsta_mod.o load_ttnh_mod.o load_tvab_mod.o load_tvertical_geom_mod.o load_tveta_mod.o load_tvfe_mod.o load_tvsleta_mod.o load_tvsplip_mod.o load_type_gfl_comp_mod.o load_type_gfl_naml_mod.o load_type_gfld_mod.o load_yomcst_mod.o load_yomct0_mod.o load_yomcver_mod.o load_yomdyna_mod.o load_yomjfh_mod.o load_yomlun_mod.o load_yommp0_mod.o model_dynamics_mod.o model_general_conf_mod.o par_gfl.o parkind1.o ptrgppc.o ptrslb1.o ptrslb15.o ptrslb2.o spng_mod.o type_geometry.o type_spgeom.o xrd_getoptions.o xrd_unix_env.o yemdim.o yemdyn.o yemgeo.o yemgsl.o yemlap.o yemlbc_geo.o yemmp.o yoe_aerodiag.o yom_ygfl.o yomcsgeom.o yomcst.o yomct0.o yomcver.o yomdim.o yomdimf.o yomdimv.o yomdyn.o yomdyna.o yomgem.o yomgsgeom.o yomhslmer.o yomjfh.o yomlap.o yomleg.o yomlun.o yomlun_ifsaux.o yommp.o yommp0.o yomorog.o yomrip.o yomslrep.o yomsta.o yomtnh.o yomvert.o yomvsleta.o yomvsplip.o
 
 
 subclean:
-	\rm -f abor1.o elarche.o elarmes.o elascaw.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o wrap_lapinea.o
+	\rm -f abor1.o elarche.o elarmes.o elascaw.o laitli.o lapinea.o larcina.o larcinha.o lascaw_clo.o lascaw_vintw.o test_sl_struct.o wrap_lapinea.o
 
 clean:
 	\rm -f *.o *.xml *.a *.x *.mod *.optrpt

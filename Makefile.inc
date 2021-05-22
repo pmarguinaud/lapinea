@@ -17,5 +17,5 @@ FC = pgf90 -acc -byteswapio -Mlarge_arrays -fast -Minfo=accel,all,intensity,ccff
    
 
 
-all: wrap_lapinea.x test.x test_sl_struct.x
+all: wrap_lapinea.x test_sl_struct.x
 
