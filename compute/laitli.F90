@@ -1,14 +1,11 @@
 #ifdef NECSX
 !option! -O extendreorder
 #endif
-!$acc routine(LAITLI) seq
 SUBROUTINE LAITLI(KPROMA,KPROMB,KST,KPROF,KFLEV,&
  & KFLDN,KFLDX,&
  & PDLAT,PDLO,KL0,PDVER,&
- & PXSL,PXF,KSTPT,KSTSZ,PSTACK)  
+ & PXSL,PXF)  
 
-
-#include "temp.h"
 
 !**** *LAITLI  -  semi-LAgrangian scheme:
 !                 Trilinear interpolations for one variable.
@@ -99,9 +96,6 @@ INTEGER(KIND=JPIM),INTENT(IN)    :: KL0(KPROMB,KFLEV,1:2)
 REAL(KIND=JPRB)   ,INTENT(IN)    :: PDVER(KPROMB,KFLEV) 
 REAL(KIND=JPRB)   ,INTENT(IN)    :: PXSL(KPROMA*(KFLDX-KFLDN+1)) 
 REAL(KIND=JPRB)   ,INTENT(OUT)   :: PXF(KPROMB,KFLEV) 
-INTEGER(KIND=JPIM),INTENT(IN)    :: KSTSZ
-INTEGER(KIND=JPIM),INTENT(IN)    :: KSTPT
-REAL   (KIND=JPRB),INTENT(INOUT) :: PSTACK (KSTSZ)
 !     ------------------------------------------------------------------
 
 INTEGER(KIND=JPIA) :: IV1L1, IV1L2, IV2L1, IV2L2
@@ -117,11 +111,6 @@ REAL(KIND=JPRB) :: ZDLAT, ZDLO1, ZDLO2, ZDVER, ZINF, ZINFLO1,&
 
 !*       1.    INTERPOLATIONS.
 !              ---------------
-
-init_stack ()
-
-
-
 
 IV1L1=1+KPROMA
 IV1L2=2+KPROMA

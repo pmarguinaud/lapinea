@@ -1,5 +1,4 @@
 !option! -O extendreorder
-!$acc routine(ELASCAW) seq
 SUBROUTINE ELASCAW(&
  ! --- INPUT -------------------------------------------------
  & YDVSPLIP,LDSLHDHEAT,YDSL,KPROMB,KDIMK,KST,KPROF,KFLEV,&
@@ -16,10 +15,8 @@ SUBROUTINE ELASCAW(&
  & PDLO ,PDLOMAD,PCLO,PCLOSLD,PCLOSLT,PCLOMAD,&
  & KL0,KLH0,KLEV,&
  & PDVER,PDVERMAD,PVINTW,PVINTWSLD,PVINTWSLT,PVINTWMAD,PVINTWS,&
- & PVDERW,PHVW,KDEP,KSTPT,KSTSZ,PSTACK)
+ & PVDERW,PHVW,KDEP)
 
-
-#include "temp.h"
 
 !**** *ELASCAW  -  Externalisable interpolator:
 !                 Storage of Coordinates And Weights.
@@ -248,9 +245,6 @@ REAL(KIND=JPRB)   ,INTENT(OUT)   :: PVDERW(KPROMB,KFLEV,2*KHVI,2*KHVI)
 REAL(KIND=JPRB)   ,INTENT(OUT)   :: PHVW(KPROMB,KFLEV,4*KHVI)
 INTEGER(KIND=JPIM),INTENT(OUT)   :: KDEP(KPROMB,KFLEV)
 
-INTEGER(KIND=JPIM),INTENT(IN)    :: KSTSZ
-INTEGER(KIND=JPIM),INTENT(IN)    :: KSTPT
-REAL   (KIND=JPRB),INTENT(INOUT) :: PSTACK (KSTSZ)
 !     ------------------------------------------------------------------
 
 INTEGER(KIND=JPIM) :: IADDR(YDSL%NDGSAH:YDSL%NDGENH)
@@ -261,14 +255,14 @@ INTEGER(KIND=JPIM) :: IDLUN1, IDLUX1, IFLVM2, ILA, ILA1, ILA2, ILA3,&
 REAL(KIND=JPRB) :: PD, ZD2, ZDEN1, ZDEN2, ZDVER, ZFAC, ZNUM
 
 
-temp (REAL(KIND=JPRB), ZKHTURB, (KPROMB,KFLEV,KDIMK))
+REAL(KIND=JPRB) :: ZKHTURB (KPROMB,KFLEV,KDIMK)
 LOGICAL         :: LLT_SLHD(4),LLT_PHYS(4),LLSLHD,LLSLHDQUAD,LLSLHD_OLD,LL3DTURB
 LOGICAL         :: LLCOMAD,LLCOMADH,LLCOMADV
  
-temp (REAL(KIND=JPRB), ZCLA, (KPROMB,KFLEV,3))
+REAL(KIND=JPRB) :: ZCLA (KPROMB,KFLEV,3)
 
 
-temp (REAL(KIND=JPRB), ZCLO, (KPROMB,KFLEV,3,2))
+REAL(KIND=JPRB) :: ZCLO (KPROMB,KFLEV,3,2)
 ! Duplicata of some dummy or local arrays for optimisation on NEC platform.
 INTEGER(KIND=JPIM) :: IADDR_(JPDUP,YDSL%NDGSAH:YDSL%NDGENH)
 REAL(KIND=JPRB) :: ZVETA_(JPDUP,0:KFLEV+1)
@@ -296,13 +290,6 @@ FHLO4(PD)=-PD*PD*(1.0_JPRB-PD)
 #include "abor1.intfb.h"
 
 !     ------------------------------------------------------------------
-
-init_stack ()
-
-alloc (ZKHTURB)
-alloc (ZCLA)
-alloc (ZCLO)
-
 
 ASSOCIATE(RFVV=>YDVSPLIP%RFVV)
 !     ------------------------------------------------------------------
@@ -616,17 +603,17 @@ IF (KWIS == 103 .OR. KWIS == 104 .OR. KWIS == 105) THEN
     ! * Calculation of PCLA and PCLASLD:
     CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_SLHD,PDLAT,PDLAMAD,PKAPPAT,ZKHTURB(:,:,1),&
-       & PCLA,PCLAMAD(:,:,:,1),PCLASLT(:,:,:),ISTPT,KSTSZ,PSTACK)
+       & PCLA,PCLAMAD(:,:,:,1),PCLASLT(:,:,:))
 
     ! * Calculation of PCLO and PCLOSLD:
     CALL LASCAW_CLO(KFLEV,&
      & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,1),PDLOMAD(:,:,1),&
      & PKAPPAT,ZKHTURB(:,:,1),&
-     & PCLO(:,:,:,1:1,1),PCLOMAD(:,:,:,1:1,1),PCLOSLT(:,:,:,1:1),ISTPT,KSTSZ,PSTACK)
+     & PCLO(:,:,:,1:1,1),PCLOMAD(:,:,:,1:1,1),PCLOSLT(:,:,:,1:1))
     CALL LASCAW_CLO(KFLEV,&
      & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,2),PDLOMAD(:,:,2),&
      & PKAPPAT,ZKHTURB(:,:,1),&
-     & PCLO(:,:,:,2:2,1),PCLOMAD(:,:,:,2:2,1),PCLOSLT(:,:,:,2:2),ISTPT,KSTSZ,PSTACK)
+     & PCLO(:,:,:,2:2,1),PCLOMAD(:,:,:,2:2,1),PCLOSLT(:,:,:,2:2))
 
   ENDIF
 
@@ -640,17 +627,17 @@ IF (KWIS == 103 .OR. KWIS == 104 .OR. KWIS == 105) THEN
       ! * Calculation of PCLA and PCLASLD:
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_PHYS,PDLAT,PDLAMAD,ZKHTURB(:,:,JJ),ZKHTURB(:,:,JJ),&
-       & ZCLA,PCLAMAD(:,:,:,JJ),PCLA(:,:,:,JJ),ISTPT,KSTSZ,PSTACK)
+       & ZCLA,PCLAMAD(:,:,:,JJ),PCLA(:,:,:,JJ))
 
       ! * Calculation of PCLO and PCLOSLD:
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_PHYS,PDLO(:,:,1),PDLOMAD(:,:,1),&
        & ZKHTURB(:,:,JJ),ZKHTURB(:,:,JJ),&
-       & ZCLO(:,:,:,1),PCLOMAD(:,:,:,1:1,JJ),PCLO(:,:,:,1:1,JJ),ISTPT,KSTSZ,PSTACK)
+       & ZCLO(:,:,:,1),PCLOMAD(:,:,:,1:1,JJ),PCLO(:,:,:,1:1,JJ))
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_PHYS,PDLO(:,:,2),PDLOMAD(:,:,2),&
        & ZKHTURB(:,:,JJ),ZKHTURB(:,:,JJ),&
-       & ZCLO(:,:,:,2),PCLOMAD(:,:,:,2:2,JJ),PCLO(:,:,:,2:2,JJ),ISTPT,KSTSZ,PSTACK)
+       & ZCLO(:,:,:,2),PCLOMAD(:,:,:,2:2,JJ),PCLO(:,:,:,2:2,JJ))
 
     ELSE
 
@@ -664,18 +651,18 @@ IF (KWIS == 103 .OR. KWIS == 104 .OR. KWIS == 105) THEN
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_SLHD,PDLAT,PDLAMAD,&
        & PKAPPA,ZKHTURB(:,:,JJ),&
-       & PCLA(:,:,:,JJ),PCLAMAD(:,:,:,JJ),PCLASLD(:,:,:,JJ),ISTPT,KSTSZ,PSTACK)
+       & PCLA(:,:,:,JJ),PCLAMAD(:,:,:,JJ),PCLASLD(:,:,:,JJ))
 
       ! * Calculation of PCLO and PCLOSLD for central lat 1 and 2
       ! (linear int. only for lat 0 and 3)
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,1),PDLOMAD(:,:,1),&
        & PKAPPA,ZKHTURB(:,:,JJ),&
-       & PCLO(:,:,:,1:1,JJ),PCLOMAD(:,:,:,1:1,JJ),PCLOSLD(:,:,:,1:1,JJ),ISTPT,KSTSZ,PSTACK)
+       & PCLO(:,:,:,1:1,JJ),PCLOMAD(:,:,:,1:1,JJ),PCLOSLD(:,:,:,1:1,JJ))
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,2),PDLOMAD(:,:,2),&
        & PKAPPA,ZKHTURB(:,:,JJ),&
-       & PCLO(:,:,:,2:2,JJ),PCLOMAD(:,:,:,2:2,JJ),PCLOSLD(:,:,:,2:2,JJ),ISTPT,KSTSZ,PSTACK)
+       & PCLO(:,:,:,2:2,JJ),PCLOMAD(:,:,:,2:2,JJ),PCLOSLD(:,:,:,2:2,JJ))
 
     ENDIF
 
@@ -685,7 +672,7 @@ IF (KWIS == 103 .OR. KWIS == 104 .OR. KWIS == 105) THEN
   CALL LASCAW_VINTW(LDSLHDHEAT,&
    & KPROMB,KFLEV,KST,KPROF,LLCOMADV,LLT_SLHD(1:3),KLEV,&
    & PLEV,PDVER,PDVERMAD,PSTDDISW,PKAPPA,PKAPPAT,PVETA,ZVCUICO_,ZVSLD_,ZVSLDW_,&
-   & PVINTW,PVINTWMAD,PVINTWSLD,PVINTWSLT,ISTPT,KSTSZ,PSTACK)
+   & PVINTW,PVINTWMAD,PVINTWSLD,PVINTWSLT)
 
   IF (KWIS == 104) THEN
     DO JLEV=1,KFLEV
@@ -907,17 +894,17 @@ IF (KWIS == 203) THEN
   CALL LASCAW_CLO(KFLEV,&
    & KPROMB,KST,KPROF,LLT_SLHD,PDLAT,PDLAMAD,&
    & PKAPPA,ZKHTURB(:,:,1),&
-   & PCLA(:,:,:,1),PCLAMAD(:,:,:,1),PCLASLD(:,:,:,1),ISTPT,KSTSZ,PSTACK)
+   & PCLA(:,:,:,1),PCLAMAD(:,:,:,1),PCLASLD(:,:,:,1))
 
   ! * Calculation of PCLO and PCLOSLD:
   CALL LASCAW_CLO(KFLEV,&
    & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,1),PDLOMAD(:,:,1),&
    & PKAPPA,ZKHTURB(:,:,1),&
-   & PCLO(:,:,:,1:1,1),PCLOMAD(:,:,:,1:1,1),PCLOSLD(:,:,:,1:1,1),ISTPT,KSTSZ,PSTACK)
+   & PCLO(:,:,:,1:1,1),PCLOMAD(:,:,:,1:1,1),PCLOSLD(:,:,:,1:1,1))
   CALL LASCAW_CLO(KFLEV,&
    & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,2),PDLOMAD(:,:,2),&
    & PKAPPA,ZKHTURB(:,:,1),&
-   & PCLO(:,:,:,2:2,1),PCLOMAD(:,:,:,2:2,1),PCLOSLD(:,:,:,2:2,1),ISTPT,KSTSZ,PSTACK)
+   & PCLO(:,:,:,2:2,1),PCLOMAD(:,:,:,2:2,1),PCLOSLD(:,:,:,2:2,1))
 
 ENDIF
 

@@ -1,9 +1,6 @@
-!$acc routine(LASCAW_CLO) seq
 SUBROUTINE LASCAW_CLO(KFLEV,&
- & KPROM,KST,KPROF,LDT,PDLO,PDLOMAD,PKAPPA,PKHTURB,PCLO,PCLOMAD,PCLOSLD,KSTPT,KSTSZ,PSTACK)
+ & KPROM,KST,KPROF,LDT,PDLO,PDLOMAD,PKAPPA,PKHTURB,PCLO,PCLOMAD,PCLOSLD)
 
-
-#include "temp.h"
 
 !     ------------------------------------------------------------------
 
@@ -92,9 +89,6 @@ REAL(KIND=JPRB)   , INTENT(OUT) :: PCLO(KPROM,KFLEV,3)
 REAL(KIND=JPRB)   , INTENT(OUT) :: PCLOMAD(KPROM,KFLEV,3)
 REAL(KIND=JPRB)   , INTENT(OUT) :: PCLOSLD(KPROM,KFLEV,3)
 
-INTEGER(KIND=JPIM), INTENT(IN)  :: KSTSZ
-INTEGER(KIND=JPIM), INTENT(IN)  :: KSTPT
-REAL   (KIND=JPRB), INTENT(INOUT):: PSTACK (KSTSZ)
 !     ------------------------------------------------------------------
 
 INTEGER(KIND=JPIM) :: JROF,JLEV
@@ -121,8 +115,6 @@ FLAG3(PD)= PP6_R   *(PD+1.0_JPRB)*PD*(PD-1.0_JPRB)
 FQUAD1(PD)=(1.0_JPRB-PD)*(1.0_JPRB+0.25_JPRB*PD)
 FQUAD2(PD)=PD*(1.25_JPRB-0.25_JPRB*PD)
 FQUAD3(PD)=0.25_JPRB*PD*(PD-1.0_JPRB)
-
-init_stack ()
 
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------

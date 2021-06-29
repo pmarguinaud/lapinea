@@ -1,11 +1,8 @@
-!$acc routine(LASCAW_VINTW) seq
 SUBROUTINE LASCAW_VINTW(LDSLHDHEAT,KPROM,KFLEV,KST,KPROF,&
  & LDCOMADV,LDT_SLHD,&
  & KLEV,PLEV,PDVER,PDVERMAD,PSTDDISW,PKAPPA,PKAPPAT,PVETA,PVCUICO_,PVSLD_,PVSLDW_,&
- & PVINTW,PVINTWMAD,PVINTWSLD,PVINTWSLT,KSTPT,KSTSZ,PSTACK)
+ & PVINTW,PVINTWMAD,PVINTWSLD,PVINTWSLT)
 
-
-#include "temp.h"
 
 !     ------------------------------------------------------------------
 
@@ -112,9 +109,6 @@ REAL(KIND=JPRB)   , INTENT(OUT) :: PVINTWMAD(KPROM,KFLEV,3)
 REAL(KIND=JPRB)   , INTENT(OUT) :: PVINTWSLD(KPROM,KFLEV,3)
 REAL(KIND=JPRB)   , INTENT(OUT) :: PVINTWSLT(KPROM,KFLEV,3)
 
-INTEGER(KIND=JPIM), INTENT(IN)  :: KSTSZ
-INTEGER(KIND=JPIM), INTENT(IN)  :: KSTPT
-REAL   (KIND=JPRB), INTENT(INOUT):: PSTACK (KSTSZ)
 !     ------------------------------------------------------------------
 
 INTEGER(KIND=JPIM) :: JROF,IJ_,ILEVV,JLEV
@@ -126,11 +120,6 @@ LOGICAL :: LLSLHD,LLSLHDQUAD,LLSLHD_OLD
 
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-
-init_stack ()
-
-
-
 
 LLSLHD=LDT_SLHD(1)
 LLSLHDQUAD=LDT_SLHD(2)

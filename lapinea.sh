@@ -10,11 +10,12 @@ module load nvidia-compilers/20.11
 
 set -x
 
-cd /gpfswork/rech/jau/ufh62jk/lapinea/
+cd /gpfswork/rech/jau/ufh62jk/lapinea/notmanaged
 
 
 # ./wrap_lapinea.x --case data.8 --diff
 #nvprof --print-gpu-trace ./wrap_lapinea.x --case data.8 
-#./wrap_lapinea.x --case lapinea.2Gb --heapsize 100
-nvprof --print-gpu-trace ./wrap_lapinea.x --case lapinea.2Gb --heapsize 100
+#./wrap_lapinea.x --case lapinea.2Gb --count 200 --heapsize 100 --diff --diff-block-list 2
+nvprof --print-gpu-trace ./wrap_lapinea.x --case lapinea.2Gb --count 200 --heapsize 100  --times 8
+#nvprof --print-gpu-trace ./wrap_lapinea.x --case lapinea.2Gb --heapsize 100
 
