@@ -271,7 +271,7 @@ sub f
 
   my $xpath = shift (@_);
 
-  while ($xpath =~ s/\?/$_[0]/)
+  while (@_ && ($xpath =~ s/\?/$_[0]/))
     {
       shift (@_);
     }
