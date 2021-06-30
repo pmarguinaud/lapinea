@@ -277,7 +277,17 @@ sub f
     }
 
 
-  my @x = $xpc->findnodes ($xpath, $_[0]);
+  my @x;
+
+  eval 
+    {
+      @x = $xpc->findnodes ($xpath, $_[0]);
+    };
+
+  if (my $c = $@)
+    {
+      &croak ($c);
+    }
 
   if (! defined ($_[1]))
     {

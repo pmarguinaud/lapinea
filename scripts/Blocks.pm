@@ -59,53 +59,65 @@ sub addBlocks
   
   my @pu = &f ('./f:object/f:file/f:program-unit', $doc);
   
+# my ($KGPBLKS_TARGET, $JLON_NAME, $KLON_NAME) = qw (KLON JLON KLON);
+  my ($KGPBLKS_TARGET, $JLON_NAME, @KLON_NAME) = qw (KST JROF KPROMA KPROMB YDGEOMETRY%YRDIM%NPROMA);
+
   for my $pu (@pu)
     {
   
       # Add KGPBLKS argument
       {
-        my ($KLON) = &f ('.//f:arg-N[./f:N/f:n/text ()="KLON"]', $pu);
-        $KLON->parentNode->insertBefore (&n ('<arg-N><N><n>KGPBLKS</n></N></arg-N>'), $KLON);
-        $KLON->parentNode->insertBefore (&t (','), $KLON);
+        my ($target) = &f ('.//f:arg-N[./f:N/f:n/text ()="?"]', $KGPBLKS_TARGET, $pu);
+        $target->parentNode->insertBefore (&n ('<arg-N><N><n>KGPBLKS</n></N></arg-N>'), $target);
+        $target->parentNode->insertBefore (&t (','), $target);
       }
   
       # Declare KGPBLKS argument
       {
-        my ($KLON) = &f ('.//f:T-decl-stmt//f:EN-decl[./f:EN-N/f:N/f:n/text ()="KLON"]', $pu);
-        $KLON->parentNode->insertBefore (&n ('<EN-decl><EN-N><N><n>KGPBLKS</n></N></EN-N></EN-decl>'), $KLON);
-        $KLON->parentNode->insertBefore (&t (','), $KLON);
+        my ($target) = &f ('.//f:T-decl-stmt//f:EN-decl[./f:EN-N/f:N/f:n/text ()="?"]', $KGPBLKS_TARGET, $pu);
+        $target->parentNode->insertBefore (&n ('<EN-decl><EN-N><N><n>KGPBLKS</n></N></EN-N></EN-decl>'), $target);
+        $target->parentNode->insertBefore (&t (','), $target);
       }
   
       # Insert KGPBLKS argument in CALL statements
       {
-        my @KLON = &f ('.//f:arg[./f:named-E/f:N/f:n/text ()="KLON"]', $pu);
-        for my $KLON (@KLON)
+        my @target = &f ('.//f:arg[./f:named-E/f:N/f:n/text ()="?"]', $KGPBLKS_TARGET, $pu);
+        for my $target (@target)
           {
-            $KLON->parentNode->insertBefore (&n ('<arg><named-E><N><n>KGPBLKS</n></N></named-E></arg>'), $KLON);
-            $KLON->parentNode->insertBefore (&t (','), $KLON);
+            $target->parentNode->insertBefore (&n ('<arg><named-E><N><n>KGPBLKS</n></N></named-E></arg>'), $target);
+            $target->parentNode->insertBefore (&t (','), $target);
           }
       }
   
       # Add JBLK loop variable
       {
-        my ($JLON) = &f ('.//f:T-decl-stmt//f:EN-decl[./f:EN-N/f:N/f:n/text ()="JLON"]', $pu);
-        $JLON->parentNode->insertBefore (&n ('<EN-decl><EN-N><N><n>JBLK</n></N></EN-N></EN-decl>'), $JLON);
-        $JLON->parentNode->insertBefore (&t (','), $JLON);
+        my ($jlon) = &f ('.//f:T-decl-stmt//f:EN-decl[./f:EN-N/f:N/f:n/text ()="?"]', $JLON_NAME, $pu);
+        $jlon->parentNode->insertBefore (&n ('<EN-decl><EN-N><N><n>JBLK</n></N></EN-N></EN-decl>'), $jlon);
+        $jlon->parentNode->insertBefore (&t (','), $jlon);
       }
   
   
       # Add JBLK dimension to arrays whose first dimension is KLON
-      my @sslt = &f ('.//f:EN-decl/f:array-spec/f:shape-spec-LT[./f:shape-spec/f:upper-bound/f:named-E/f:N/f:n/text ()="KLON"]', $pu);
+      my @en_decl = map { my $var = $_; 
+                       &f ('.//f:EN-decl[./f:array-spec/f:shape-spec-LT' 
+                         . '[./f:shape-spec/f:upper-bound/f:named-E[string (.)="?"]]]', 
+                           $var, $pu) } @KLON_NAME;
   
-      for my $sslt (@sslt)
+      for my $en_decl (@en_decl)
         {
-          $sslt->appendChild (&t (','));
-          $sslt->appendChild (&n ('<shape-spec><upper-bound><named-E><N><n>KGPBLKS</n></N></named-E></upper-bound></shape-spec>'));
+          my ($sslt) = &f ('./f:array-spec/f:shape-spec-LT', $en_decl);
+          my @ss = &f ('./f:shape-spec', $sslt);
+          my @SS = map { $_->textContent } @ss;
+#         my ($r) = grep { $SS[$_+1] =~ m/^(?:KDIMK|YDML_DYN%YYTLSCAW%NDIM)$/o } (0 .. $#SS-1);
+#         $r = $#SS unless (defined ($r));
+          my $r = $#SS;
+          $sslt->insertAfter (&n ('<shape-spec><upper-bound><named-E><N><n>KGPBLKS</n></N></named-E></upper-bound></shape-spec>'), $ss[$r]);
+          $sslt->insertAfter (&t (','), $ss[$r]);
         }
   
       # Find DO loops with JLON variable
   
-      my @do = &f ('.//f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="JLON"]', $pu);
+      my @do = &f ('.//f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="?"]', $JLON_NAME, $pu);
 
       my %lh;
   
@@ -113,7 +125,14 @@ sub addBlocks
   
       for my $do (@do)
         {
-          my ($doo) = &f ('ancestor-or-self::f:do-construct', $do);
+          my @doo = &f ('ancestor-or-self::f:do-construct', $do);
+          my $doo;
+          for my $dooo (@doo)
+            {
+              my ($var) = &f ('./f:do-stmt/f:do-V', $dooo, 1);
+              $doo = $dooo;
+              last if ($var && ($var ne 'JITER'));
+            }
           $lh{$doo->unique_key} = $doo;
         }
 
@@ -133,7 +152,7 @@ sub addBlocks
   
           my @dob = &n (<< "EOF");
 <do-construct><do-stmt>DO <do-V><named-E><N><n>JBLK</n></N></named-E></do-V> = <lower-bound><literal-E><l>1</l></literal-E></lower-bound>, <upper-bound><named-E><N><n>KGPBLKS</n></N></named-E></upper-bound></do-stmt>
-$sp<do-construct><do-stmt>DO <do-V><named-E><N><n>JLON</n></N></named-E></do-V> = <lower-bound><named-E><N><n>KIDIA</n></N></named-E></lower-bound>, <upper-bound><named-E><N><n>KFDIA</n></N></named-E></upper-bound></do-stmt>
+$sp<do-construct><do-stmt>DO <do-V><named-E><N><n>$JLON_NAME</n></N></named-E></do-V> = <lower-bound><named-E><N><n>KIDIA</n></N></named-E></lower-bound>, <upper-bound><named-E><N><n>KFDIA</n></N></named-E></upper-bound></do-stmt>
 $sp<C/>
 $sp<end-do-stmt>ENDDO</end-do-stmt></do-construct>
 $sp<end-do-stmt>ENDDO</end-do-stmt></do-construct>
@@ -154,20 +173,20 @@ EOF
           # Add JBLK index to variables
   
 
-          for my $elt (&f ('.//f:element-LT[./f:element/f:named-E/f:N/f:n/text ()="JLON"]', $lh))
+          for my $elt (&f ('.//f:element-LT[./f:element/f:named-E/f:N/f:n/text ()="?"]', $JLON_NAME, $lh))
             {
               $elt->appendChild (&t (','));
               $elt->appendChild (&n ('<element><named-E><N><n>JBLK</n></N></named-E></element>'));
             }
   
           # Is this one necessary ?
-          for my $elt (&f ('.//f:section-subscript-LT[./f:section-subscript/f:named-E/f:N/f:n/text ()="JLON"]', $lh))
+          for my $elt (&f ('.//f:section-subscript-LT[./f:section-subscript/f:named-E/f:N/f:n/text ()="?"]', $JLON_NAME, $lh))
             {
               $elt->appendChild (&t (','));
               $elt->appendChild (&n ('<section-subscript><named-E><N><n>JBLK</n></N></named-E></section-subscript>'));
             }
 
-          for my $elt (&f ('.//f:section-subscript-LT[./f:section-subscript/f:lower-bound/f:named-E/f:N/f:n/text ()="JLON"]', $lh))
+          for my $elt (&f ('.//f:section-subscript-LT[./f:section-subscript/f:lower-bound/f:named-E/f:N/f:n/text ()="?"]', $JLON_NAME, $lh))
             {
               $elt->appendChild (&t (','));
               $elt->appendChild (&n ('<section-subscript><lower-bound><named-E><N><n>JBLK</n></N></named-E></lower-bound></section-subscript>'));
@@ -175,7 +194,7 @@ EOF
   
           # Remove innermost JLON DO loops
   
-          my @do = &f ('descendant-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="JLON"]', $lh);
+          my @do = &f ('descendant-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="?"]', $JLON_NAME, $lh);
   
           for my $do  (@do)
             {

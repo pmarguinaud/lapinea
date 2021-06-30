@@ -52,10 +52,6 @@ REAL (KIND=JPRB)   , POINTER :: PRSCAWH (:,:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PSCO    (:,:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PGFLT1  (:,:,:,:)
 
-REAL (KIND=JPRB)   , POINTER :: PSTACK  (:,:)
-INTEGER (KIND=JPIM)          :: KSTSZ
-INTEGER (KIND=JPIM)          :: KSTPT
-
 #include "lapinea.intfb.h"
 
 INTEGER (KIND=JPIM), POINTER :: KVSEPC_OUT  (:)
@@ -161,10 +157,6 @@ NGPBLKS = MIN (SIZE (KVSEPC), ICOUNT)
 NPROMA = YDGEOMETRY%YRDIM%NPROMA
 NFLEVG = YDGEOMETRY%YRDIMV%NFLEVG
 
-KSTPT = 1
-KSTSZ = (40 + YDML_DYN%YYTSCO%NDIM + YDML_DYN%YRDYN%NSLDIMK) * NPROMA * NFLEVG
-ALLOCATE (PSTACK (KSTSZ, NGPBLKS))
-
 #undef LOAD
 
 #ifdef USE_ACC
@@ -178,8 +170,7 @@ DO ITIME = 1, NTIMES
 !$acc parallel loop gang vector private (IBL, JLON, IST, IEND) collapse (2) vector_length (NPROMA) &
 !$acc & present (YDGEOMETRY, YDML_GCONF, YDSL, YDML_DYN) copyin (PB1, PB2) &
 !$acc & copy (KVSEPC, KVSEPL) &
-!$acc & copyout (PCCO, PUF, PVF, KL0, KLH0, PLSCAW, PRSCAW, KL0H, PLSCAWH, PRSCAWH, PSCO,PGFLT1) &
-!$acc & create (PSTACK)
+!$acc & copyout (PCCO, PUF, PVF, KL0, KLH0, PLSCAW, PRSCAW, KL0H, PLSCAWH, PRSCAWH, PSCO,PGFLT1)
 
   DO IBL = 1, NGPBLKS
    
@@ -196,7 +187,7 @@ DO ITIME = 1, NTIMES
      & PCCO(:,:,:,IBL),PUF(:,:,IBL),PVF(:,:,IBL),&
      & KL0(:,:,:,IBL),KLH0(:,:,:,IBL),PLSCAW(:,:,:,IBL),PRSCAW(:,:,:,IBL),&
      & KL0H(:,:,:,IBL),PLSCAWH(:,:,:,IBL),PRSCAWH(:,:,:,IBL),&
-     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL),KSTPT,KSTSZ,PSTACK (:,IBL))
+     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL))
     ENDDO
 
   ENDDO
@@ -221,7 +212,7 @@ DO ITIME = 1, NTIMES
      & PCCO(:,:,:,IBL),PUF(:,:,IBL),PVF(:,:,IBL),&
      & KL0(:,:,:,IBL),KLH0(:,:,:,IBL),PLSCAW(:,:,:,IBL),PRSCAW(:,:,:,IBL),&
      & KL0H(:,:,:,IBL),PLSCAWH(:,:,:,IBL),PRSCAWH(:,:,:,IBL),&
-     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL),KSTPT,KSTSZ,PSTACK (:,IBL))
+     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL))
 
   ENDDO
 
