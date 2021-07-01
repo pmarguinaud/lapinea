@@ -148,6 +148,8 @@ sub getIndent
 
   my $stmt = shift;
 
+  my $indent = 0;
+
   my $n = $stmt->previousSibling;
 
   unless ($n)
@@ -156,17 +158,23 @@ sub getIndent
         {
           return &getIndent ($stmt->parentNode);
         }
-      return 0;
+      $indent = 0;
+      goto RETURN;
     }
 
 
   if (($n->nodeName eq '#text') && ($n->data =~ m/\n/o))
     {
-      (my $t = $n->data) =~ s/^.*\n//o;
-      return length ($t);
+      (my $t = $n->data) =~ s/^.*\n//smo;
+      $indent = length ($t);
+      goto RETURN;
     }
 
-  return 0;
+  $indent = 0;
+
+RETURN:
+
+  return $indent;
 }
 
 sub reIndent
