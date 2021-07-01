@@ -1300,6 +1300,13 @@ sub intfb
             }
         }
   
+      # Strip blocks (these may contain use statements)
+      
+      for (&f ('.//f:block-construct', $doc))
+        {
+          $_->unbindNode ();
+        }
+  
       # Keep use statements
       
       for (&f ('.//f:use-stmt', $pu))
@@ -1339,8 +1346,7 @@ sub intfb
     {
       $_->unbindNode ();
     }
-   
-  
+
   # Strip empty lines
   
   my $text = $doc->textContent ();
