@@ -609,11 +609,11 @@ IF (KWIS == 103 .OR. KWIS == 104 .OR. KWIS == 105) THEN
     CALL LASCAW_CLO(KFLEV,&
      & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,1),PDLOMAD(:,:,1),&
      & PKAPPAT,ZKHTURB(:,:,1),&
-     & PCLO(:,:,:,1:1,1),PCLOMAD(:,:,:,1:1,1),PCLOSLT(:,:,:,1:1))
+     & PCLO(:,:,:,1,1),PCLOMAD(:,:,:,1,1),PCLOSLT(:,:,:,1))
     CALL LASCAW_CLO(KFLEV,&
      & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,2),PDLOMAD(:,:,2),&
      & PKAPPAT,ZKHTURB(:,:,1),&
-     & PCLO(:,:,:,2:2,1),PCLOMAD(:,:,:,2:2,1),PCLOSLT(:,:,:,2:2))
+     & PCLO(:,:,:,2,1),PCLOMAD(:,:,:,2,1),PCLOSLT(:,:,:,2))
 
   ENDIF
 
@@ -633,11 +633,11 @@ IF (KWIS == 103 .OR. KWIS == 104 .OR. KWIS == 105) THEN
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_PHYS,PDLO(:,:,1),PDLOMAD(:,:,1),&
        & ZKHTURB(:,:,JJ),ZKHTURB(:,:,JJ),&
-       & ZCLO(:,:,:,1),PCLOMAD(:,:,:,1:1,JJ),PCLO(:,:,:,1:1,JJ))
+       & ZCLO(:,:,:,1),PCLOMAD(:,:,:,1,JJ),PCLO(:,:,:,1,JJ))
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_PHYS,PDLO(:,:,2),PDLOMAD(:,:,2),&
        & ZKHTURB(:,:,JJ),ZKHTURB(:,:,JJ),&
-       & ZCLO(:,:,:,2),PCLOMAD(:,:,:,2:2,JJ),PCLO(:,:,:,2:2,JJ))
+       & ZCLO(:,:,:,2),PCLOMAD(:,:,:,2,JJ),PCLO(:,:,:,2,JJ))
 
     ELSE
 
@@ -658,11 +658,11 @@ IF (KWIS == 103 .OR. KWIS == 104 .OR. KWIS == 105) THEN
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,1),PDLOMAD(:,:,1),&
        & PKAPPA,ZKHTURB(:,:,JJ),&
-       & PCLO(:,:,:,1:1,JJ),PCLOMAD(:,:,:,1:1,JJ),PCLOSLD(:,:,:,1:1,JJ))
+       & PCLO(:,:,:,1,JJ),PCLOMAD(:,:,:,1,JJ),PCLOSLD(:,:,:,1,JJ))
       CALL LASCAW_CLO(KFLEV,&
        & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,2),PDLOMAD(:,:,2),&
        & PKAPPA,ZKHTURB(:,:,JJ),&
-       & PCLO(:,:,:,2:2,JJ),PCLOMAD(:,:,:,2:2,JJ),PCLOSLD(:,:,:,2:2,JJ))
+       & PCLO(:,:,:,2,JJ),PCLOMAD(:,:,:,2,JJ),PCLOSLD(:,:,:,2,JJ))
 
     ENDIF
 
@@ -900,11 +900,11 @@ IF (KWIS == 203) THEN
   CALL LASCAW_CLO(KFLEV,&
    & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,1),PDLOMAD(:,:,1),&
    & PKAPPA,ZKHTURB(:,:,1),&
-   & PCLO(:,:,:,1:1,1),PCLOMAD(:,:,:,1:1,1),PCLOSLD(:,:,:,1:1,1))
+   & PCLO(:,:,:,1,1),PCLOMAD(:,:,:,1,1),PCLOSLD(:,:,:,1,1))
   CALL LASCAW_CLO(KFLEV,&
    & KPROMB,KST,KPROF,LLT_SLHD,PDLO(:,:,2),PDLOMAD(:,:,2),&
    & PKAPPA,ZKHTURB(:,:,1),&
-   & PCLO(:,:,:,2:2,1),PCLOMAD(:,:,:,2:2,1),PCLOSLD(:,:,:,2:2,1))
+   & PCLO(:,:,:,2,1),PCLOMAD(:,:,:,2,1),PCLOSLD(:,:,:,2,1))
 
 ENDIF
 
