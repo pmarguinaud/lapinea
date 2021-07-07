@@ -7,3 +7,4 @@
 *.intfb.h
 *.ok
 slurm-*.out
+.*.swp
