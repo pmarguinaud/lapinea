@@ -27,7 +27,17 @@ sub hoistJlonLoops
   
       for my $do (@do)
         {
-          my ($doo) = &f ('ancestor-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()!="?"]', $JLON, $do);
+          my @doo = &f ('ancestor-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()!="?"]', $JLON, $do);
+
+          my $doo;
+
+          for my $dooo (@doo)
+            {
+              my ($var) = &f ('./f:do-stmt/f:do-V', $dooo, 1);
+              $doo = $dooo if ($var && ($var ne $JLON) && ($var ne 'JITER'));
+              last if ($var && ($var ne 'JITER'));
+            }
+
           $lh{$doo->unique_key} = $doo if ($doo);
         }
 
