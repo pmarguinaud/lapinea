@@ -13,11 +13,13 @@ sub hoistJlonLoops
   
   my @pu = &f ('./f:object/f:file/f:program-unit', $doc);
   
+  my ($JLON, $KIDIA, $KFDIA) = ('JROF', 'KST', 'KPROF');
+
   for my $pu (@pu)
     {
       # Find DO loops with JLON variable
   
-      my @do = &f ('.//f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="JLON"]', $pu);
+      my @do = &f ('.//f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="?"]', $JLON, $pu);
 
       my %lh;
   
@@ -25,7 +27,7 @@ sub hoistJlonLoops
   
       for my $do (@do)
         {
-          my ($doo) = &f ('ancestor-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()!="JLON"]', $do);
+          my ($doo) = &f ('ancestor-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()!="?"]', $JLON, $do);
           $lh{$doo->unique_key} = $doo if ($doo);
         }
 
@@ -42,7 +44,7 @@ sub hoistJlonLoops
           # Create a JLON loop nest
   
           my @dob = &n (<< "EOF");
-<do-construct><do-stmt>DO <do-V><named-E><N><n>JLON</n></N></named-E></do-V> = <lower-bound><named-E><N><n>KIDIA</n></N></named-E></lower-bound>, <upper-bound><named-E><N><n>KFDIA</n></N></named-E></upper-bound></do-stmt>
+<do-construct><do-stmt>DO <do-V><named-E><N><n>$JLON</n></N></named-E></do-V> = <lower-bound><named-E><N><n>$KIDIA</n></N></named-E></lower-bound>, <upper-bound><named-E><N><n>$KFDIA</n></N></named-E></upper-bound></do-stmt>
 $sp<C/>
 $sp<end-do-stmt>ENDDO</end-do-stmt></do-construct>
 EOF
@@ -61,7 +63,7 @@ EOF
   
           # Remove innermost JLON DO loops
   
-          my @do = &f ('descendant-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="JLON"]', $lh);
+          my @do = &f ('descendant-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()="?"]', $JLON, $lh);
   
           for my $do  (@do)
             {

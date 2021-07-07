@@ -86,7 +86,7 @@ sub preProcessIfNewer
         {
           if ($opts{'single-block'})
             {
-              &SingleBlock::hoistJlonLoops ($d);
+#             &SingleBlock::hoistJlonLoops ($d);
 #             &SingleBlock::addParallelLoopDirectives ($d);
             }
           else
@@ -108,13 +108,14 @@ sub preProcessIfNewer
 my @opts_f = qw (update compile kernels single-block);
 my @opts_s = qw (arch bin);
 
-$opts{'single-block'} = 1;
 
 &GetOptions
 (
   map ({ ($_,     \$opts{$_}) } @opts_f),
   map ({ ("$_=s", \$opts{$_}) } @opts_s),
 );
+
+$opts{'single-block'} = 1;
 
 my @compute = map { &basename ($_) } (<compute/*.F90>, <compute/*.h>);
 my @support = map { &basename ($_) } (<support/*.F90>, <support/*.h>);
