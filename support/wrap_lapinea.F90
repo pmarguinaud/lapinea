@@ -227,9 +227,6 @@ cpi (PB2);
 
 #undef cpi
 
-    LLDBG = .TRUE.
-    JJROF = 1
-
     TSC = OMP_GET_WTIME ()
 
     IST=1
@@ -281,9 +278,6 @@ DO ITIME = 1, NTIMES
 
   DO IBL = 1, NGPBLKS
 
-    LLDBG = IBL == 1
-    JJROF = 1
-   
     IST=1
     IEND=NPROMA
 
