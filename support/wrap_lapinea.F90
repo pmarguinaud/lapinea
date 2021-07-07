@@ -14,6 +14,7 @@ USE LOAD_MOD
 #ifdef USE_ACC
 USE CUDAFOR
 #endif
+USE OMP_LIB
 
 USE LOAD_YOMCT0_MOD
 USE LOAD_YOMDYNA_MOD
@@ -44,7 +45,6 @@ TYPE (SL_STRUCT)               :: YDSL
 
 REAL (KIND=JPRB)   , POINTER :: PB1     (:,:)
 REAL (KIND=JPRB)   , POINTER :: PB2     (:,:,:)
-
 INTEGER (KIND=JPIM), POINTER :: KVSEPC  (:)
 INTEGER (KIND=JPIM), POINTER :: KVSEPL  (:)
 REAL (KIND=JPRB)   , POINTER :: PCCO    (:,:,:,:)
@@ -60,7 +60,25 @@ REAL (KIND=JPRB)   , POINTER :: PRSCAWH (:,:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PSCO    (:,:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PGFLT1  (:,:,:,:)
 
+REAL (KIND=JPRB)   , POINTER :: PB1_    (:,:)
+REAL (KIND=JPRB)   , POINTER :: PB2_    (:,:)
+INTEGER (KIND=JPIM)          :: KVSEPC_ 
+INTEGER (KIND=JPIM)          :: KVSEPL_ 
+REAL (KIND=JPRB)   , POINTER :: PCCO_   (:,:,:)
+REAL (KIND=JPRB)   , POINTER :: PUF_    (:,:)
+REAL (KIND=JPRB)   , POINTER :: PVF_    (:,:)
+INTEGER (KIND=JPIM), POINTER :: KL0_    (:,:,:)
+INTEGER (KIND=JPIM), POINTER :: KLH0_   (:,:,:)
+REAL (KIND=JPRB)   , POINTER :: PLSCAW_ (:,:,:)
+REAL (KIND=JPRB)   , POINTER :: PRSCAW_ (:,:,:)
+INTEGER (KIND=JPIM), POINTER :: KL0H_   (:,:,:)
+REAL (KIND=JPRB)   , POINTER :: PLSCAWH_(:,:,:)
+REAL (KIND=JPRB)   , POINTER :: PRSCAWH_(:,:,:)
+REAL (KIND=JPRB)   , POINTER :: PSCO_   (:,:,:)
+REAL (KIND=JPRB)   , POINTER :: PGFLT1_ (:,:,:)
+
 #include "lapinea.intfb.h"
+#include "abor1.intfb.h"
 
 INTEGER (KIND=JPIM), POINTER :: KVSEPC_OUT  (:)
 INTEGER (KIND=JPIM), POINTER :: KVSEPL_OUT  (:)
@@ -90,6 +108,7 @@ INTEGER (KIND=8) :: HEAPSIZE
 INTEGER (KIND=4) :: HEAPSIZE4
 INTEGER (KIND=4) :: ISTAT
 LOGICAL :: LLSINGLEBLOCK
+REAL(KIND=8) :: TSC, TEC, TSD, TED, ZTC, ZTD
 
 
 CALL INITOPTIONS ()
@@ -102,6 +121,7 @@ HEAPSIZE4 = 0
 CALL GETOPTION ("--heapsize", HEAPSIZE4)
 NTIMES = 1
 CALL GETOPTION ("--times", NTIMES)
+LLSINGLEBLOCK = .FALSE.
 CALL GETOPTION ("--single-block", LLSINGLEBLOCK)
 CALL CHECKOPTIONS ()
 
@@ -151,6 +171,10 @@ LOAD (PRSCAWH) = 0
 LOAD (PSCO) = 0
 LOAD (PGFLT1) = 0
 
+IF (LLSINGLEBLOCK) THEN
+  CALL RS_CSGEOM (YDGEOMETRY%YRCSGEOM)
+  CALL RS_GSGEOM (YDGEOMETRY%YRGSGEOM)
+ENDIF
 
 !$acc enter data create (YDGEOMETRY) 
 CALL COPY (YDGEOMETRY) 
@@ -173,18 +197,84 @@ NFLEVG = YDGEOMETRY%YRDIMV%NFLEVG
 CALL CUDAPROFILERSTART 
 #endif
 
+IF (LLSINGLEBLOCK) THEN
+
+PRINT *, " KVSEPC = ", KVSEPC
+PRINT *, " KVSEPL = ", KVSEPL
+
+PB1_ => PB1
+KVSEPC_ = KVSEPC (1)
+KVSEPL_ = KVSEPL (1)
+
+#define realo(x) CALL REALO (x, x##_)
+
+realo (PB2); realo (PCCO); realo (PUF); realo (PVF); realo (KL0); 
+realo (KLH0); realo (PLSCAW); realo (PRSCAW); realo (KL0H); 
+realo (PLSCAWH); realo (PRSCAWH); realo (PSCO); realo (PGFLT1);
+
+#undef realo
+
+YDGEOMETRY%YRDIM%NPROMA = NPROMA * NGPBLKS
+
 DO ITIME = 1, NTIMES
 
-!$acc parallel loop gang vector private (IBL, JLON, IST, IEND) collapse (2) vector_length (NPROMA) &
-!$acc & present (YDGEOMETRY, YDML_GCONF, YDSL, YDML_DYN) copyin (PB1, PB2) &
-!$acc & copy (KVSEPC, KVSEPL) &
-!$acc & copyout (PCCO, PUF, PVF, KL0, KLH0, PLSCAW, PRSCAW, KL0H, PLSCAWH, PRSCAWH, PSCO,PGFLT1)
+    TSD = OMP_GET_WTIME ()
+
+!$acc data &
+!$acc & copyin (PB1_) &
+!$acc & create (PB2_, PCCO_, PUF_, PVF_, KL0_, KLH0_, PLSCAW_, PRSCAW_, KL0H_, PLSCAWH_, PRSCAWH_, PSCO_, PGFLT1_)
+
+    TSC = OMP_GET_WTIME ()
+
+    IST=1
+    IEND=NPROMA*NGPBLKS
+
+    CALL LAPINEA(&
+     ! --- INPUT --------------------------------------------------------------
+     & YDGEOMETRY,YDML_GCONF,YDML_DYN,1_JPIM,IEND,YDSL,1_JPIM,PB1_,PB2_,&
+     ! --- INPUT/OUTPUT -------------------------------------------------------
+     & KVSEPC_,KVSEPL_,&
+     ! --- OUTPUT -------------------------------------------------------------
+     & PCCO_,PUF_,PVF_,&
+     & KL0_,KLH0_,PLSCAW_,PRSCAW_,&
+     & KL0H_,PLSCAWH_,PRSCAWH_,&
+     & PSCO_,PGFLT1_)
+
+    TEC = OMP_GET_WTIME ()
+
+#define cpo(x) CALL CPRS (x, x##_, .FALSE.)
+
+cpo (PB2); cpo (PCCO ); cpo (PUF); cpo (PVF); cpo (KL0);
+cpo (KLH0); cpo (PLSCAW); cpo (PRSCAW); cpo (KL0H); cpo (PLSCAWH);
+cpo (PRSCAWH); cpo (PSCO); cpo (PGFLT1);
+
+#undef cpo
+
+!$acc end data
+
+    TED = OMP_GET_WTIME ()
+
+    ZTC = ZTC + (TEC - TSC)
+    ZTD = ZTD + (TED - TSD)
+
+ENDDO
+
+PRINT *, " ZTD = ", ZTD, ZTD / REAL (NGPBLKS * NPROMA, JPRB)
+PRINT *, " ZTC = ", ZTC, ZTC / REAL (NGPBLKS * NPROMA, JPRB)
+
+
+ELSE
+
+#ifdef USE_ACC
+CALL ABOR1 ('WRAP_LAPINEA: CANNOT RUN WITH MULTIPLE BLOCKS')
+#else
+
+DO ITIME = 1, NTIMES
 
   DO IBL = 1, NGPBLKS
    
-    DO JLON = 1, NPROMA
-    IST=JLON
-    IEND=JLON
+    IST=1
+    IEND=NPROMA
 
     CALL LAPINEA(&
      ! --- INPUT --------------------------------------------------------------
@@ -196,13 +286,14 @@ DO ITIME = 1, NTIMES
      & KL0(:,:,:,IBL),KLH0(:,:,:,IBL),PLSCAW(:,:,:,IBL),PRSCAW(:,:,:,IBL),&
      & KL0H(:,:,:,IBL),PLSCAWH(:,:,:,IBL),PRSCAWH(:,:,:,IBL),&
      & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL))
-    ENDDO
 
   ENDDO
 
-!$acc end parallel loop 
-
 ENDDO
+
+#endif
+
+ENDIF
 
 #ifdef USE_ACC
 CALL CUDAPROFILERSTOP
@@ -396,7 +487,47 @@ X1 => X1_
 
 END SUBROUTINE
 
-SUBROUTINE CPRS3 (X3, X3_, LDH2D)
+SUBROUTINE CPRSI3 (I3, I3_, LDH2D)
+
+INTEGER (KIND=JPIM) :: I3 (:,:,:,:), I3_ (:,:,:)
+LOGICAL :: LDH2D
+
+INTEGER :: JLON, JBLK, NLON, NBLK, I, NI, J, NJ
+
+NLON = SIZE (I3, 1)
+NI   = SIZE (I3, 2)
+NJ   = SIZE (I3, 3)
+NBLK = SIZE (I3, 4)
+
+IF (LDH2D) THEN
+!$acc parallel loop present (I3_) copyin (I3) collapse (4)
+DO JBLK = 1, NBLK
+  DO I = 1, NI
+  DO J = 1, NJ
+    DO JLON = 1, NLON
+      I3_ ((JBLK-1)*NLON+JLON,I,J) = I3 (JLON, I, J, JBLK)
+    ENDDO
+  ENDDO
+  ENDDO
+ENDDO
+!$acc end parallel loop
+ELSE
+!$acc parallel loop present (I3_) copyout (I3) collapse (4)
+DO JBLK = 1, NBLK
+  DO I = 1, NI
+  DO J = 1, NJ
+    DO JLON = 1, NLON
+      I3 (JLON, I, J, JBLK) = I3_ ((JBLK-1)*NLON+JLON,I,J) 
+    ENDDO
+  ENDDO
+  ENDDO
+ENDDO
+!$acc end parallel loop
+ENDIF
+
+END SUBROUTINE
+
+SUBROUTINE CPRSX3 (X3, X3_, LDH2D)
 
 REAL (KIND=JPRB) :: X3 (:,:,:,:), X3_ (:,:,:)
 LOGICAL :: LDH2D
@@ -436,7 +567,7 @@ ENDIF
 
 END SUBROUTINE
 
-SUBROUTINE CPRS2 (X2, X2_, LDH2D)
+SUBROUTINE CPRSX2 (X2, X2_, LDH2D)
 
 REAL (KIND=JPRB) :: X2 (:,:,:), X2_ (:,:)
 LOGICAL :: LDH2D
@@ -501,7 +632,7 @@ ENDIF
 
 END SUBROUTINE
 
-SUBROUTINE CPRS1 (X1, X1_, LDH2D)
+SUBROUTINE CPRSX1 (X1, X1_, LDH2D)
 
 REAL (KIND=JPRB) :: X1 (:,:), X1_ (:)
 LOGICAL :: LDH2D
@@ -552,9 +683,11 @@ ALLOCATE (X3_ (SIZE (X3, 1) * SIZE (X3, 4), SIZE (X3, 2), SIZE (X3, 3)))
 END SUBROUTINE
 
 SUBROUTINE REALOI3 (I3, I3_)
-REAL (KIND=JPRB), POINTER :: I3 (:,:,:,:), I3_ (:,:,:)
+INTEGER (KIND=JPIM), POINTER :: I3 (:,:,:,:), I3_ (:,:,:)
 ALLOCATE (I3_ (SIZE (I3, 1) * SIZE (I3, 4), SIZE (I3, 2), SIZE (I3, 3)))
 END SUBROUTINE
 
 END
+
+
 

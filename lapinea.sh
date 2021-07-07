@@ -7,6 +7,7 @@
 #SBATCH --exclusive
 
 module load nvidia-compilers/21.5
+module load valgrind/3.15.0
 
 set -x
 set -e
@@ -15,10 +16,18 @@ cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-kernels
 
 ./scripts/compile.pl --update --arch cpu --bin wrap_lapinea.x --compile
 
-./compile.cpu/wrap_lapinea.x --case data.8 --diff --single-block > diff.txt
+ ./compile.cpu/wrap_lapinea.x --case data.8 --diff > diff.mb.txt
 
 set +e
-diff diff.ref.txt diff.txt
+diff diff.ref.txt diff.mb.txt
+set -e
+
+ ./compile.cpu/wrap_lapinea.x --case data.8 --diff --single-block > diff.sb.txt
+#gdb --ex run --args  ./compile.cpu/wrap_lapinea.x --case data.8 --single-block #--diff 
+#valgrind  --track-origins=yes ./compile.cpu/wrap_lapinea.x --case data.8 --single-block #--diff 
+
+set +e
+#diff diff.ref.txt diff.sb.txt
 set -e
 
 exit
