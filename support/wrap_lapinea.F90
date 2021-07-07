@@ -1,5 +1,7 @@
 PROGRAM WRAP_LAPINEA
 
+USE YOMDBG
+
 USE LOAD_GEOMETRY_MOD
 USE LOAD_SL_STRUCT_MOD
 USE LOAD_MODEL_GENERAL_CONF_TYPE_MOD
@@ -199,9 +201,6 @@ CALL CUDAPROFILERSTART
 
 IF (LLSINGLEBLOCK) THEN
 
-PRINT *, " KVSEPC = ", KVSEPC
-PRINT *, " KVSEPL = ", KVSEPL
-
 PB1_ => PB1
 KVSEPC_ = KVSEPC (1)
 KVSEPL_ = KVSEPL (1)
@@ -224,6 +223,15 @@ DO ITIME = 1, NTIMES
 !$acc & copyin (PB1_) &
 !$acc & create (PB2_, PCCO_, PUF_, PVF_, KL0_, KLH0_, PLSCAW_, PRSCAW_, KL0H_, PLSCAWH_, PRSCAWH_, PSCO_, PGFLT1_)
 
+#define cpi(x) CALL CPRS (x, x##_, .TRUE.)
+
+cpi (PB2);
+
+#undef cpi
+
+    LLDBG = .TRUE.
+    JJROF = 1
+
     TSC = OMP_GET_WTIME ()
 
     IST=1
@@ -242,6 +250,7 @@ DO ITIME = 1, NTIMES
 
     TEC = OMP_GET_WTIME ()
 
+
 #define cpo(x) CALL CPRS (x, x##_, .FALSE.)
 
 cpo (PB2); cpo (PCCO ); cpo (PUF); cpo (PVF); cpo (KL0);
@@ -249,6 +258,7 @@ cpo (KLH0); cpo (PLSCAW); cpo (PRSCAW); cpo (KL0H); cpo (PLSCAWH);
 cpo (PRSCAWH); cpo (PSCO); cpo (PGFLT1);
 
 #undef cpo
+
 
 !$acc end data
 
@@ -259,8 +269,8 @@ cpo (PRSCAWH); cpo (PSCO); cpo (PGFLT1);
 
 ENDDO
 
-PRINT *, " ZTD = ", ZTD, ZTD / REAL (NGPBLKS * NPROMA, JPRB)
-PRINT *, " ZTC = ", ZTC, ZTC / REAL (NGPBLKS * NPROMA, JPRB)
+!PRINT *, " ZTD = ", ZTD, ZTD / REAL (NGPBLKS * NPROMA, JPRB)
+!PRINT *, " ZTC = ", ZTC, ZTC / REAL (NGPBLKS * NPROMA, JPRB)
 
 
 ELSE
@@ -272,6 +282,9 @@ CALL ABOR1 ('WRAP_LAPINEA: CANNOT RUN WITH MULTIPLE BLOCKS')
 DO ITIME = 1, NTIMES
 
   DO IBL = 1, NGPBLKS
+
+    LLDBG = IBL == 1
+    JJROF = 1
    
     IST=1
     IEND=NPROMA
@@ -298,7 +311,6 @@ ENDIF
 #ifdef USE_ACC
 CALL CUDAPROFILERSTOP
 #endif
-
 
 IF (LLDIFF) THEN
 

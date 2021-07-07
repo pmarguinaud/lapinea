@@ -23,11 +23,9 @@ diff diff.ref.txt diff.mb.txt
 set -e
 
  ./compile.cpu/wrap_lapinea.x --case data.8 --diff --single-block > diff.sb.txt
-#gdb --ex run --args  ./compile.cpu/wrap_lapinea.x --case data.8 --single-block #--diff 
-#valgrind  --track-origins=yes ./compile.cpu/wrap_lapinea.x --case data.8 --single-block #--diff 
 
 set +e
-#diff diff.ref.txt diff.sb.txt
+diff diff.ref.txt diff.sb.txt
 set -e
 
 exit
