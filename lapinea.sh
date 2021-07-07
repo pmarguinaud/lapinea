@@ -6,11 +6,22 @@
 #SBATCH --time 00:05:00
 #SBATCH --exclusive
 
-module load nvidia-compilers/20.11
+module load nvidia-compilers/21.5
 
 set -x
+set -e
 
-cd /gpfswork/rech/jau/ufh62jk/lapinea/notmanaged
+cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-kernels
+
+./scripts/compile.pl --update --arch cpu --bin wrap_lapinea.x --compile
+
+./compile.cpu/wrap_lapinea.x --case data.8 --diff --single-block > diff.txt
+
+set +e
+diff diff.ref.txt diff.txt
+set -e
+
+exit
 
 
 # ./wrap_lapinea.x --case data.8 --diff

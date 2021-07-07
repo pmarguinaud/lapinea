@@ -68,8 +68,8 @@ sub preProcessIfNewer
       &Associate::resolveAssociates ($d);
       &saveToFile ($d, "tmp/resolveAssociates/$f2");
 
-#     &Loop::expandJlonLoops ($d);
-#     &saveToFile ($d, "tmp/expandJlonLoops/$f2");
+      &Loop::expandJlonLoops ($d);
+      &saveToFile ($d, "tmp/expandJlonLoops/$f2");
 
       unless ($opts{'single-block'})
         {
@@ -86,7 +86,7 @@ sub preProcessIfNewer
         {
           if ($opts{'single-block'})
             {
-#             &SingleBlock::hoistJlonLoops ($d);
+              &SingleBlock::hoistJlonLoops ($d);
 #             &SingleBlock::addParallelLoopDirectives ($d);
             }
           else
@@ -107,6 +107,8 @@ sub preProcessIfNewer
 
 my @opts_f = qw (update compile kernels single-block);
 my @opts_s = qw (arch bin);
+
+$opts{'single-block'} = 1;
 
 &GetOptions
 (
