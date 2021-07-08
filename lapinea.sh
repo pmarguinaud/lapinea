@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --export=NONE
+#SBATCH --account=hun@gpu
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
-#SBATCH --partition=gpu_p2,gpu_p1
 #SBATCH --time 00:05:00
 #SBATCH --exclusive
 
@@ -14,19 +14,21 @@ set -e
 
 cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-kernels
 
-./scripts/compile.pl --update --arch cpu --bin wrap_lapinea.x --compile
 
- ./compile.cpu/wrap_lapinea.x --case data.8 --diff > diff.mb.txt
+for arch in cpu gpu
+do
+  ./scripts/compile.pl --update --arch $arch --bin wrap_lapinea.x --compile
+done
 
-set +e
-diff diff.ref.txt diff.mb.txt
-set -e
+for arch in cpu gpu
+do
+  ./compile.$arch/wrap_lapinea.x --case data.8 --diff --single-block > diff.$arch.txt
 
- ./compile.cpu/wrap_lapinea.x --case data.8 --diff --single-block > diff.sb.txt
+# set +e
+# diff diff.ref.txt diff.$arch.txt
+# set -e
 
-set +e
-diff diff.ref.txt diff.sb.txt
-set -e
+done
 
 exit
 
