@@ -399,6 +399,7 @@ sub addDataDirectives
   
     }
 
+  &addDataDirectivesNonJlonVariables ($d);
 }
 
 sub exchangeJlonJlevLoops
@@ -457,6 +458,65 @@ sub mergeKernels
   
     }
 }
+
+sub addDataDirectivesNonJlonVariables
+{
+  my $d = shift;
+
+  my %done;
+
+  my $JLON = 'JROF';
+  my ($KGPBLKS_TARGET, $JLON_NAME, @KLON_NAME) = qw (KST JROF KPROMA KPROMB YDGEOMETRY%YRDIM%NPROMA);
+
+  for my $en (&f ('.//f:EN-N/f:N/f:n/text ()', $d, 1))
+    {
+      next unless (my $sslt = &getShapeSpecList ($en, $d));
+
+      my @ss = &f ('./f:shape-spec', $sslt, 1);
+
+      next if ((grep { $_ eq $ss[0] } @KLON_NAME) or ($ss[0] eq ':'));
+
+      my @stmt = &f ('.//f:a-stmt[f:E-1/f:named-E/f:N/f:n/text ()="?"]', $en, $d);
+
+      for my $stmt (@stmt)
+        {
+          my ($E1) = &f ('./f:E-1/*', $stmt); my $e1 = $E1->textContent ();
+
+          my @ss = &f ('./f:R-LT/f:parens-R/f:element-LT/f:element', $E1);
+
+          unless (@ss)
+            {
+              @ss = &f ('./f:R-LT/f:array-R/f:section-subscript-LT/f:section-subscript', $E1);
+            }
+
+          my $ind1 = @ss && ($ss[0]->textContent =~ m/^[A-Z]\w*$/o);
+
+          my ($do) = $ind1 ? &f ('ancestor::f:do-construct', $stmt) : ();
+
+          next if ($do && &f ('./f:do-stmt/f:do-V[string (.)="?"]', $JLON, $do));
+
+
+          my $x = $do || $stmt;
+          my $sp = &Fxtran::getIndent ($x);
+          next if ($done{$en}{$x->unique_key}++);
+
+          if ($do)
+            {
+              $x->parentNode->insertAfter (&n ("<C>!\$acc update device ($en)</C>"), $x);
+              $x->parentNode->insertAfter (&t ("\n" . (' ' x $sp)), $x);
+            }
+          else
+            {
+              $x->parentNode->insertAfter (&n ("<C>!\$acc update device ($e1)</C>"), $x);
+              $x->parentNode->insertAfter (&t ("\n" . (' ' x $sp)), $x);
+            }
+  
+        }
+
+    }
+}
+
+
 
 1;
 

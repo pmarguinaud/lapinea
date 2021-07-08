@@ -22,7 +22,10 @@ done
 
 for arch in cpu gpu
 do
-./compile.$arch/wrap_lapinea.x --case data.8 --single-block --fix-arrays > diff.$arch.txt
+
+#xport PGI_ACC_NOTIFY=1
+
+./compile.$arch/wrap_lapinea.x --case data.8 --single-block --fix-arrays --diff > diff.$arch.txt
 
  #set +e
  #diff diff.ref.txt diff.$arch.txt

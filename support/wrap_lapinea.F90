@@ -1,7 +1,5 @@
 PROGRAM WRAP_LAPINEA
 
-#include "dbg.h"
-
 USE LOAD_GEOMETRY_MOD
 USE LOAD_SL_STRUCT_MOD
 USE LOAD_MODEL_GENERAL_CONF_TYPE_MOD
@@ -245,9 +243,6 @@ cpi (PB2);
 
 #undef cpi
 
-PCCO_ (1, 1, 1) = 999.
-!$acc update device (PCCO_ (1, 1, 1))
-
     TSC = OMP_GET_WTIME ()
 
     IST=1
@@ -266,17 +261,9 @@ PCCO_ (1, 1, 1) = 999.
 
     TEC = OMP_GET_WTIME ()
 
-!$acc update host (PCCO_ (1, 1, 1))
-PP, PCCO_ (1, 1, 1)
-
-
 #define cpo(x) CALL CPRS (x, x##_, .FALSE.)
 
-cpo (PB2); 
-
-CALL CPRSX3_O (PCCO, PCCO_, .FALSE.); 
-
-cpo (PUF); cpo (PVF); cpo (KL0);
+cpo (PB2); cpo (PCCO); cpo (PUF); cpo (PVF); cpo (KL0);
 cpo (KLH0); cpo (PLSCAW); cpo (PRSCAW); cpo (KL0H); cpo (PLSCAWH);
 cpo (PRSCAWH); cpo (PSCO); cpo (PGFLT1);
 
@@ -335,8 +322,6 @@ IF (LLFIXARRAYS) THEN
   PB2 => PB2_1
 ENDIF
 
-
-PP, PCCO (1, 1, 1, 1)
 
 #ifdef USE_ACC
 CALL CUDAPROFILERSTOP
@@ -623,11 +608,6 @@ NBLK = SIZE (X3, 4)
 
 PRINT *, " NLON = ", NLON, " NI = ", NI, "NJ = ", NJ, " NBLK = ", NBLK
 PRINT *, " LDH2D = ", LDH2D
-!$acc update host (X3_ (1, 1, 1))
-PP, X3_ (1, 1, 1)
-
-!$acc update host (X3_ (1, 1, 1))
-PP, X3_ (1, 1, 1)
 
 !$acc parallel loop present (X3_) copyout (X3) collapse (4)
 DO JBLK = 1, NBLK
@@ -642,7 +622,6 @@ ENDDO
 !$acc end parallel loop
 
 
-PP, X3 (1, 1, 1, 1)
 
 END SUBROUTINE
 

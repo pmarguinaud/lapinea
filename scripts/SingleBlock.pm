@@ -99,12 +99,14 @@ sub addParallelLoopDirectives
   my $d = shift;
 
   my @pu = &f ('./f:object/f:file/f:program-unit', $d);
+
+  my $JLON = 'JROF';
   
   # Insert OpenACC parallel directives
   
   for my $pu (@pu)
     {
-      my @do = &f ('.//f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text()="JLON"]', $d);
+      my @do = &f ('.//f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text()="?"]', $JLON, $d);
   
       for my $do (@do)
         {

@@ -87,6 +87,7 @@ sub preProcessIfNewer
           if ($opts{'single-block'})
             {
               &SingleBlock::hoistJlonLoops ($d);
+              &saveToFile ($d, "tmp/hoistJlonLoops/$f2");
               &SingleBlock::addParallelLoopDirectives ($d);
             }
           else
