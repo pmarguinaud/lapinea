@@ -1,5 +1,7 @@
 PROGRAM WRAP_LAPINEA
 
+#include "dbg.h"
+
 USE LOAD_GEOMETRY_MOD
 USE LOAD_SL_STRUCT_MOD
 USE LOAD_MODEL_GENERAL_CONF_TYPE_MOD
@@ -77,6 +79,8 @@ REAL (KIND=JPRB)   , POINTER :: PRSCAWH_(:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PSCO_   (:,:,:)
 REAL (KIND=JPRB)   , POINTER :: PGFLT1_ (:,:,:)
 
+REAL (KIND=JPRB)   , POINTER :: PB2_1   (:,:,:)
+
 #include "lapinea.intfb.h"
 #include "abor1.intfb.h"
 
@@ -107,7 +111,7 @@ INTEGER, POINTER :: IDIFFBLOCK (:) => NULL ()
 INTEGER (KIND=8) :: HEAPSIZE
 INTEGER (KIND=4) :: HEAPSIZE4
 INTEGER (KIND=4) :: ISTAT
-LOGICAL :: LLSINGLEBLOCK
+LOGICAL :: LLSINGLEBLOCK, LLFIXARRAYS
 REAL(KIND=8) :: TSC, TEC, TSD, TED, ZTC, ZTD
 
 
@@ -123,6 +127,7 @@ NTIMES = 1
 CALL GETOPTION ("--times", NTIMES)
 LLSINGLEBLOCK = .FALSE.
 CALL GETOPTION ("--single-block", LLSINGLEBLOCK)
+CALL GETOPTION ("--fix-arrays", LLFIXARRAYS)
 CALL CHECKOPTIONS ()
 
 #ifdef USE_ACC
@@ -170,6 +175,19 @@ LOAD (PLSCAWH) = 0
 LOAD (PRSCAWH) = 0
 LOAD (PSCO) = 0
 LOAD (PGFLT1) = 0
+
+IF (LLFIXARRAYS) THEN
+#define fixa(x) IF (x == -99999999) x = SIZE (PB2, 2)+1
+  fixa (YDML_DYN%YRPTRSLB2%MSLB2KAPPA )
+  fixa (YDML_DYN%YRPTRSLB2%MSLB2KAPPAT)
+  fixa (YDML_DYN%YRPTRSLB2%MSLB2KAPPAM)
+  fixa (YDML_DYN%YRPTRSLB2%MSLB2KAPPAH)
+#undef fixa
+  ALLOCATE (PB2_1 (SIZE (PB2, 1), SIZE (PB2, 2)+YDGEOMETRY%YRDIMV%NFLEVG, SIZE (PB2, 3)))
+  PB2_1 (:,1:SIZE (PB2, 2),:) = PB2
+  DEALLOCATE (PB2)
+  PB2 => PB2_1
+ENDIF
 
 IF (LLSINGLEBLOCK) THEN
   CALL RS_CSGEOM (YDGEOMETRY%YRCSGEOM)
@@ -227,6 +245,9 @@ cpi (PB2);
 
 #undef cpi
 
+PCCO_ (1, 1, 1) = 999.
+!$acc update device (PCCO_ (1, 1, 1))
+
     TSC = OMP_GET_WTIME ()
 
     IST=1
@@ -245,10 +266,17 @@ cpi (PB2);
 
     TEC = OMP_GET_WTIME ()
 
+!$acc update host (PCCO_ (1, 1, 1))
+PP, PCCO_ (1, 1, 1)
+
 
 #define cpo(x) CALL CPRS (x, x##_, .FALSE.)
 
-cpo (PB2); cpo (PCCO ); cpo (PUF); cpo (PVF); cpo (KL0);
+cpo (PB2); 
+
+CALL CPRSX3_O (PCCO, PCCO_, .FALSE.); 
+
+cpo (PUF); cpo (PVF); cpo (KL0);
 cpo (KLH0); cpo (PLSCAW); cpo (PRSCAW); cpo (KL0H); cpo (PLSCAWH);
 cpo (PRSCAWH); cpo (PSCO); cpo (PGFLT1);
 
@@ -299,6 +327,16 @@ ENDDO
 #endif
 
 ENDIF
+
+IF (LLFIXARRAYS) THEN
+  ALLOCATE (PB2_1 (SIZE (PB2, 1), SIZE (PB2, 2)-YDGEOMETRY%YRDIMV%NFLEVG, SIZE (PB2, 3)))
+  PB2_1 = PB2 (:,1:SIZE (PB2, 2)-YDGEOMETRY%YRDIMV%NFLEVG,:)
+  DEALLOCATE (PB2)
+  PB2 => PB2_1
+ENDIF
+
+
+PP, PCCO (1, 1, 1, 1)
 
 #ifdef USE_ACC
 CALL CUDAPROFILERSTOP
@@ -568,6 +606,43 @@ DO JBLK = 1, NBLK
 ENDDO
 !$acc end parallel loop
 ENDIF
+
+END SUBROUTINE
+
+SUBROUTINE CPRSX3_O (X3, X3_, LDH2D)
+
+REAL (KIND=JPRB) :: X3 (:,:,:,:), X3_ (:,:,:)
+LOGICAL :: LDH2D
+
+INTEGER :: JLON, JBLK, NLON, NBLK, I, NI, J, NJ
+
+NLON = SIZE (X3, 1)
+NI   = SIZE (X3, 2)
+NJ   = SIZE (X3, 3)
+NBLK = SIZE (X3, 4)
+
+PRINT *, " NLON = ", NLON, " NI = ", NI, "NJ = ", NJ, " NBLK = ", NBLK
+PRINT *, " LDH2D = ", LDH2D
+!$acc update host (X3_ (1, 1, 1))
+PP, X3_ (1, 1, 1)
+
+!$acc update host (X3_ (1, 1, 1))
+PP, X3_ (1, 1, 1)
+
+!$acc parallel loop present (X3_) copyout (X3) collapse (4)
+DO JBLK = 1, NBLK
+  DO I = 1, NI
+  DO J = 1, NJ
+    DO JLON = 1, NLON
+      X3 (JLON, I, J, JBLK) = X3_ ((JBLK-1)*NLON+JLON,I,J) 
+    ENDDO
+  ENDDO
+  ENDDO
+ENDDO
+!$acc end parallel loop
+
+
+PP, X3 (1, 1, 1, 1)
 
 END SUBROUTINE
 

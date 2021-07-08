@@ -22,11 +22,11 @@ done
 
 for arch in cpu gpu
 do
-  ./compile.$arch/wrap_lapinea.x --case data.8 --diff --single-block > diff.$arch.txt
+./compile.$arch/wrap_lapinea.x --case data.8 --single-block --fix-arrays > diff.$arch.txt
 
-# set +e
-# diff diff.ref.txt diff.$arch.txt
-# set -e
+ #set +e
+ #diff diff.ref.txt diff.$arch.txt
+ #set -e
 
 done
 

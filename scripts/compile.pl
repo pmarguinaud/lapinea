@@ -86,8 +86,8 @@ sub preProcessIfNewer
         {
           if ($opts{'single-block'})
             {
-#             &SingleBlock::hoistJlonLoops ($d);
-#             &SingleBlock::addParallelLoopDirectives ($d);
+              &SingleBlock::hoistJlonLoops ($d);
+              &SingleBlock::addParallelLoopDirectives ($d);
             }
           else
             {
@@ -96,8 +96,8 @@ sub preProcessIfNewer
         }
 
 
-#     &Blocks::addDataDirectives ($d);
-#     &saveToFile ($d, "tmp/addDirectives/$f2");
+      &Blocks::addDataDirectives ($d);
+      &saveToFile ($d, "tmp/addDirectives/$f2");
 
       'FileHandle'->new (">$f2")->print ($d->textContent ());
 

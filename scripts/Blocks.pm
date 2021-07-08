@@ -44,6 +44,15 @@ sub getShapeSpecList
   return $sslt;
 }
 
+sub getAttributes
+{
+  my ($var, $doc) = @_;
+  my ($decl) = &f ('.//f:T-decl-stmt[.//f:EN-decl/f:EN-N/f:N/f:n/text ()="?"]', $var, $doc);
+  $decl or die "var=$var\n";
+  my @attr = &f ('./f:attribute', $decl);
+  return @attr;
+}
+
 sub getTypeSpec
 {
   my ($var, $doc) = @_;
@@ -304,14 +313,27 @@ sub addDataDirectives
   
       # Keep those which are arrays or derived types in @aa
   
-      my @aa;
-  
+      my @aa;  # Arguments (derived types & arrays)
+      my @ao;  # Optional arguments (derived types & arrays)
+
       for my $arg (@arg)
         {
           my $as = &getShapeSpecList ($arg, $pu);
           my $ts = &getTypeSpec ($arg, $pu);
           
-          push @aa, $arg if ($as || $ts->nodeName eq 'derived-T-spec');
+          if ($as || $ts->nodeName eq 'derived-T-spec')
+            {
+              my @attr = map { $_->textContent } &getAttributes ($arg, $pu);
+
+              if (grep { $_ eq 'OPTIONAL' } @attr)
+                {
+                  push @ao, $arg;
+                }
+              else
+                {
+                  push @aa, $arg;
+                }
+            }
         }
   
       @aa = sort @aa;
@@ -350,6 +372,16 @@ sub addDataDirectives
           $cr->parentNode->insertAfter (&n ('<C>!$acc data '
                                           . 'present (' . join (', ', splice (@aa, 0, 10)) . ')'
                                           . '</C>'),  $cr);
+          $cr->parentNode->insertAfter (&t ($sp), $cr);
+          $nacc++;
+        }
+  
+      # Declare arrays & derived type arguments as present (optional arguments)
+     
+      for my $ao (@ao)
+        {
+          $cr->parentNode->insertAfter (&t ("\n"), $cr);
+          $cr->parentNode->insertAfter (&n ("<C>!\$acc data present ($ao) if (PRESENT ($ao))</C>"), $cr);
           $cr->parentNode->insertAfter (&t ($sp), $cr);
           $nacc++;
         }
