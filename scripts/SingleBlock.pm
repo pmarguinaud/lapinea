@@ -3,6 +3,7 @@ package SingleBlock;
 use strict;
 use FileHandle;
 use Data::Dumper;
+use List::Util qw (uniqstr);
 
 use Fxtran;
 
@@ -29,6 +30,7 @@ sub hoistJlonLoops
         {
           my @doo = &f ('ancestor-or-self::f:do-construct[./f:do-stmt/f:do-V/f:named-E/f:N/f:n/text ()!="?"]', $JLON, $do);
 
+
           my $doo;
 
           for my $dooo (@doo)
@@ -38,7 +40,13 @@ sub hoistJlonLoops
               last if ($var && ($var ne 'JITER'));
             }
 
-          $lh{$doo->unique_key} = $doo if ($doo);
+
+          if ($doo)
+            {
+              my ($write) = &f ('.//f:write-stmt', $doo);
+              $lh{$doo->unique_key} = $doo unless ($write);
+            }
+          
         }
 
       my @lh = values (%lh);
@@ -111,26 +119,50 @@ sub addParallelLoopDirectives
       for my $do (@do)
         {
           my %p;
-  
-          # Loop variables & temporary scalars; these are meant to be private
-          my @s = &f ('.//f:E-1/f:named-E[not (./f:R-LT)]/f:N/f:n/text ()', $do);
-          my @v = &f ('descendant-or-self::f:do-construct/f:do-stmt/f:do-V/f:named-E/f:N/f:n/text()', $do);
-       
-          for (@s, @v)
+
+
+          if (&f ('.//f:write-stmt', $do))
             {
-              $p{$_->textContent}++;
+              # Loops with a WRITE statement should run on the host
+     
+              my @v = (&f ('.//f:named-E[not (./f:R-LT/f:component-R)]'
+                        . '[./f:R-LT/f:parens-R/f:element-LT/f:element[string (.)="?"]]/f:N/f:n/text ()', 
+                           $JLON, $do, 1),
+                       &f ('.//f:named-E[not (./f:R-LT/f:component-R)]'
+                        .  '[./f:R-LT/f:array-R/f:section-subscript-LT/f:section-subscript[string (.)="?"]]/f:N/f:n/text ()', 
+                           $JLON, $do, 1));
+              @v = &uniqstr (@v);
+
+              my $sp = &Fxtran::getIndent ($do);
+              for my $v (@v)
+                {
+                  $do->parentNode->insertBefore (&n ("<C>!\$acc update host ($v)</C>"), $do);
+                  $do->parentNode->insertBefore (&t ("\n" . (' ' x $sp)), $do);
+                }
             }
+          else
+            {
+              # Loop variables & temporary scalars; these are meant to be private
+              my @s = &f ('.//f:E-1/f:named-E[not (./f:R-LT)]/f:N/f:n/text ()', $do);
+              my @v = &f ('descendant-or-self::f:do-construct/f:do-stmt/f:do-V/f:named-E/f:N/f:n/text()', $do);
+            
+              for (@s, @v)
+                {
+                  $p{$_->textContent}++;
+                }
   
-          my @p = sort keys (%p);
+              my @p = sort keys (%p);
   
-          my $sp = $do->previousSibling;
-          ($sp = $sp->textContent) =~ s/^\s*\n//o;
-          $do->parentNode->insertBefore (&n ('<C>!$acc parallel loop gang vector '
-#                                          . (@p ? 'private (' . join (', ', @p) . ') ' : '')
-#                                          . 'default (none)'
-                                           . '</C>'), $do);
-          $do->parentNode->insertBefore (&t ("\n"), $do);
-          $do->parentNode->insertBefore (&t ($sp), $do);
+              my $sp = $do->previousSibling;
+              ($sp = $sp->textContent) =~ s/^\s*\n//o;
+              $do->parentNode->insertBefore (&n ('<C>!$acc parallel loop gang vector '
+#                                              . (@p ? 'private (' . join (', ', @p) . ') ' : '')
+#                                              . 'default (none)'
+                                               . '</C>'), $do);
+              $do->parentNode->insertBefore (&t ("\n"), $do);
+              $do->parentNode->insertBefore (&t ($sp), $do);
+            }
+
         }
   
     }
