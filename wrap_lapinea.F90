@@ -14,6 +14,7 @@ USE LOAD_MOD
 #ifdef USE_ACC
 USE CUDAFOR
 #endif
+USE OMP_LIB
 
 USE LOAD_YOMCT0_MOD
 USE LOAD_YOMDYNA_MOD
@@ -85,6 +86,7 @@ INTEGER, POINTER :: IDIFFBLOCK (:) => NULL ()
 INTEGER (KIND=8) :: HEAPSIZE
 INTEGER (KIND=4) :: HEAPSIZE4
 INTEGER (KIND=4) :: ISTAT
+REAL(KIND=8) :: TSC, TEC, TSD, TED, ZTC, ZTD
 
 
 CALL INITOPTIONS ()
@@ -175,11 +177,18 @@ DO ITIME = 1, NTIMES
 
 #ifdef USE_ACC
 
-!$acc parallel loop gang vector private (IBL, JLON, IST, IEND) collapse (2) vector_length (NPROMA) &
+
+  TSD = OMP_GET_WTIME ()
+
+!$acc data &
 !$acc & present (YDGEOMETRY, YDML_GCONF, YDSL, YDML_DYN) copyin (PB1, PB2) &
 !$acc & copy (KVSEPC, KVSEPL) &
 !$acc & copyout (PCCO, PUF, PVF, KL0, KLH0, PLSCAW, PRSCAW, KL0H, PLSCAWH, PRSCAWH, PSCO,PGFLT1) &
 !$acc & create (PSTACK)
+
+  TSC = OMP_GET_WTIME ()
+
+!$acc parallel loop gang vector private (IBL, JLON, IST, IEND) collapse (2) vector_length (NPROMA) 
 
   DO IBL = 1, NGPBLKS
    
@@ -202,6 +211,15 @@ DO ITIME = 1, NTIMES
   ENDDO
 
 !$acc end parallel loop 
+
+  TEC = OMP_GET_WTIME ()
+
+!$acc end data
+
+  TED = OMP_GET_WTIME ()
+
+  ZTC = ZTC + (TEC - TSC)
+  ZTD = ZTD + (TED - TSD)
 
 #else
 
@@ -230,6 +248,9 @@ DO ITIME = 1, NTIMES
 #endif
 
 ENDDO
+
+PRINT *, " ZTD = ", ZTD, ZTD / REAL (NGPBLKS * NPROMA, JPRB)
+PRINT *, " ZTC = ", ZTC, ZTC / REAL (NGPBLKS * NPROMA, JPRB)
 
 #ifdef USE_ACC
 CALL CUDAPROFILERSTOP
