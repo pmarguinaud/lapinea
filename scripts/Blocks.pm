@@ -343,7 +343,7 @@ sub addDataDirectives
       my @la = sort grep { ! $arg{$_} } 
                map { $_->textContent } &f ('.//f:T-decl-stmt//f:EN-decl[./f:array-spec]/f:EN-N/f:N/f:n/text ()', $pu);
       
-      my @stmt = &f ('.//f:T-decl-stmt|.//f:include', $pu);
+      my @stmt = &f ('(.//f:T-decl-stmt|.//f:include)[not (ancestor::f:block-construct)]', $pu);
       my $stmt = $stmt[-1];
   
       my ($cr) = &f ('following::text ()[contains (., "' . "\n" . '")]', $stmt);

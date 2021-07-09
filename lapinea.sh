@@ -15,12 +15,19 @@ set -e
 cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-kernels
 
 
-for arch in cpu gpu
+if [ "x$SLURM_JOBID" = "x" ]
+then
+list="cpu"
+else
+list="cpu gpu"
+fi
+
+for arch in $list
 do
   ./scripts/compile.pl --update --arch $arch --bin wrap_lapinea.x --compile
 done
 
-for arch in cpu gpu
+for arch in $list
 do
 
 #xport PGI_ACC_NOTIFY=1
