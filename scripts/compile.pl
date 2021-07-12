@@ -52,6 +52,7 @@ sub preProcessIfNewer
   use Blocks;
   use SingleBlock;
   use Loop;
+  use Vector;
 
   my ($f1, $f2) = @_;
 
@@ -71,33 +72,10 @@ sub preProcessIfNewer
       &Loop::expandJlonLoops ($d);
       &saveToFile ($d, "tmp/expandJlonLoops/$f2");
 
-      unless ($opts{'single-block'})
-        {
-#         &Blocks::addBlocks ($d);
-#         &saveToFile ($d, "tmp/addBlocks/$f2");
-        }
- 
-      if ($opts{'kernels'})
-        {
-#         &Blocks::exchangeJlonJlevLoops ($d);
-#         &Blocks::addKernelDirectives ($d);
-        }
-      else
-        {
-          if ($opts{'single-block'})
-            {
-              &SingleBlock::hoistJlonLoops ($d);
-              &saveToFile ($d, "tmp/hoistJlonLoops/$f2");
-              &SingleBlock::addParallelLoopDirectives ($d);
-            }
-          else
-            {
-#             &Blocks::addParallelLoopDirectives ($d);
-            }
-        }
+      &Vector::hoistJlonLoops ($d);
+      &saveToFile ($d, "tmp/hoistJlonLoops/$f2");
 
-
-      &Blocks::addDataDirectives ($d);
+      &Vector::addDirectives ($d);
       &saveToFile ($d, "tmp/addDirectives/$f2");
 
       'FileHandle'->new (">$f2")->print ($d->textContent ());

@@ -12,14 +12,14 @@ module load valgrind/3.15.0
 set -x
 set -e
 
-cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-kernels
+cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-vector
 
 
 if [ "x$SLURM_JOBID" = "x" ]
 then
 list="cpu"
 else
-list="cpu gpu"
+list="gpu"
 fi
 
 for arch in $list
@@ -32,7 +32,7 @@ do
 
 #xport PGI_ACC_NOTIFY=1
 
-./compile.$arch/wrap_lapinea.x --case data.8 --single-block --fix-arrays --diff > diff.$arch.txt
+./compile.$arch/wrap_lapinea.x --case data.8 --heapsize 100 --diff > diff.$arch.txt
 
  #set +e
  #diff diff.ref.txt diff.$arch.txt
