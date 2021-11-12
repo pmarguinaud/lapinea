@@ -12,7 +12,7 @@ module load valgrind/3.15.0
 set -x
 set -e
 
-cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-vector
+cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-vector-stack
 
 
 if [ "x$SLURM_JOBID" = "x" ]
