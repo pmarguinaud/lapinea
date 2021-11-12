@@ -27,6 +27,7 @@ USE LOAD_YOMJFH_MOD
 USE XRD_GETOPTIONS
 
 USE PARKIND1
+USE STACK_MOD
 
 IMPLICIT NONE
 
@@ -42,6 +43,8 @@ TYPE (GEOMETRY)                :: YDGEOMETRY
 TYPE (MODEL_GENERAL_CONF_TYPE) :: YDML_GCONF
 TYPE (MODEL_DYNAMICS_TYPE)     :: YDML_DYN
 TYPE (SL_STRUCT)               :: YDSL
+
+TYPE(STACK) :: YLSTACK
 
 REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PB1     (:,:)
 REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PB2     (:,:,:)
@@ -183,7 +186,7 @@ DO ITIME = 1, NTIMES
 
   TSC = OMP_GET_WTIME ()
 
-  !$acc parallel loop gang
+  !$acc parallel loop gang private (YLSTACK)
   DO IBL = 1, NGPBLKS
 
     IST=1
@@ -198,7 +201,7 @@ DO ITIME = 1, NTIMES
      & PCCO(:,:,:,IBL),PUF(:,:,IBL),PVF(:,:,IBL),&
      & KL0(:,:,:,IBL),KLH0(:,:,:,IBL),PLSCAW(:,:,:,IBL),PRSCAW(:,:,:,IBL),&
      & KL0H(:,:,:,IBL),PLSCAWH(:,:,:,IBL),PRSCAWH(:,:,:,IBL),&
-     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL))
+     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL),YLSTACK)
 
   ENDDO
   !$acc end parallel loop

@@ -53,6 +53,7 @@ sub preProcessIfNewer
   use SingleBlock;
   use Loop;
   use Vector;
+  use Stack;
 
   my ($f1, $f2) = @_;
 
@@ -77,6 +78,9 @@ sub preProcessIfNewer
 
       &Vector::addDirectives ($d);
       &saveToFile ($d, "tmp/addDirectives/$f2");
+
+      &Stack::addStack ($d);
+      &saveToFile ($d, "tmp/addStack/$f2");
 
       'FileHandle'->new (">$f2")->print ($d->textContent ());
 

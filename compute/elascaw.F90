@@ -252,7 +252,7 @@ INTEGER(KIND=JPIM) :: IADDR(YDSL%NDGSAH:YDSL%NDGENH)
 INTEGER(KIND=JPIM) :: IDLUN1, IDLUX1, IFLVM2, ILA, ILA1, ILA2, ILA3,&
  & ILAG, ILEV, ILEVV, ILO, JLAT, JLEV, JROF, JJ, IJ_, J_
 
-REAL(KIND=JPRB) :: PD, ZD2, ZDEN1, ZDEN2, ZDVER, ZFAC, ZNUM
+REAL(KIND=JPRB) :: ZD2, ZDEN1, ZDEN2, ZDVER, ZFAC, ZNUM
 
 
 REAL(KIND=JPRB) :: ZKHTURB (KPROMB,KFLEV,KDIMK)
@@ -272,19 +272,10 @@ REAL(KIND=JPRB) :: ZVSLDW_(JPDUP,3,3,0:KFLEV-1)
 
 
 !     ------------------------------------------------------------------
-! functions
-
-REAL(KIND=JPRB) :: FHLO1, FHLO2, FHLO3, FHLO4
-
-! auxiliary functions for Hermite cubic interpolation
-
-FHLO1(PD)= (1.0_JPRB-PD)*(1.0_JPRB-PD)*(1.0_JPRB+2.0_JPRB*PD)
-FHLO2(PD)= PD*PD*(3._JPRB-2.0_JPRB*PD)
-FHLO3(PD)= PD*(1.0_JPRB-PD)*(1.0_JPRB-PD)
-FHLO4(PD)=-PD*PD*(1.0_JPRB-PD)
 
 !     ------------------------------------------------------------------
 
+#include "elascaw.func.h"
 #include "lascaw_clo.intfb.h"
 #include "lascaw_vintw.intfb.h"
 #include "abor1.intfb.h"
