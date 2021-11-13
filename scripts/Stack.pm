@@ -2,6 +2,44 @@ package Stack;
 
 use Fxtran;
 use strict;
+use Data::Dumper;
+
+sub removeListElement
+{
+  my $x = shift;
+
+  my $nn = $x->nodeName;
+
+  my ($p) = $x->parentNode;
+  
+  my @cf = &F ('following-sibling::text()[contains(.,",")]', $x);   
+  my @cp = &F ('preceding-sibling::text()[contains(.,",")]', $x);   
+  
+  if (@cf)
+    {   
+      $cf[+0]->unbindNode (); 
+    }   
+  elsif (@cp)
+    {   
+      $cp[-1]->unbindNode (); 
+    }   
+  
+  $x->parentNode->appendChild (&t (' '));
+  my $l = $x->parentNode->lastChild;
+  
+  $x->unbindNode (); 
+  
+  while ($l)
+    {   
+      last if (($l->nodeName ne '#text') && ($l->nodeName ne 'cnt'));
+      $l = $l->previousSibling;
+      last unless ($l);
+      $l->nextSibling->unbindNode;
+    }   
+
+  return &F ("./$nn", $p) ? 0 : 1;
+}
+
 
 
 sub addStack
@@ -27,6 +65,8 @@ sub addStack
   my ($use) = &F ('.//use-stmt[last()]', $d);
   $use->parentNode->insertAfter (&n ("<use-stmt>USE <module-N><N><n>STACK_MOD</n></N></module-N></use-stmt>"), $use);
   $use->parentNode->insertAfter (&t ("\n"), $use);
+  $use->parentNode->insertAfter (&n ("<include>#include &quot;<filename>stack.h</filename>&quot;</include>"), $use);
+  $use->parentNode->insertAfter (&t ("\n"), $use);
 
 
   my ($decl) = &F ('.//T-decl-stmt[.//EN-N[string(.)="?"]]', $last, $d);
@@ -47,8 +87,39 @@ sub addStack
   $exec->parentNode->insertBefore (&t ("\n"), $exec);
   $exec->parentNode->insertBefore (&t ("\n"), $exec);
 
+  my @KLON = qw (YDGEOMETRY%YRDIM%NPROMA KPROMA KPROMB);
 
-  
+  for my $KLON (@KLON)
+    {
+      my @en_decl = &F ('.//T-decl-stmt[not(string(.//attribute-N)="INTENT")]'
+                      . '//EN-decl[./array-spec/shape-spec-LT/shape-spec[string(./upper-bound)="?"]]', 
+                      $KLON, $d);
+      
+      for my $en_decl (@en_decl)
+        {
+          my ($n) = &F ('./EN-N', $en_decl, 1);
+
+          my $stmt = &Fxtran::stmt ($en_decl);
+      
+          my ($t) = &F ('./_T-spec_',   $stmt);     &Fxtran::expand ($t); $t = $t->textContent;
+          my ($s) = &F ('./array-spec', $en_decl);  &Fxtran::expand ($s); $s = $s->textContent;
+      
+          $stmt->parentNode->insertBefore (my $temp = &t ("temp ($t, $n, $s)"), $stmt);
+      
+          if (&removeListElement ($en_decl))
+            {
+              $stmt->unbindNode ();
+            }
+          else
+            {
+              $temp->parentNode->insertAfter (&t ("\n"), $temp);
+            }
+      
+          $exec->parentNode->insertBefore (&t ("alloc ($n)\n"), $exec);
+
+        }
+
+    }
 
 }
 
