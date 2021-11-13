@@ -8,3 +8,4 @@
 *.ok
 slurm-*.out
 .*.swp
+compile.*
