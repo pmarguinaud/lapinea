@@ -196,8 +196,9 @@ DO ITIME = 1, NTIMES
   !$acc parallel loop gang private (YLSTACK)
   DO IBL = 1, NGPBLKS
 
-    YLSTACK%P => PSTACK (:, IBL)
-    YLSTACK%K = 0
+    YLSTACK%L = LOC (PSTACK (1, IBL))
+    YLSTACK%U = YLSTACK%L + ISTSZ 
+
 
     IST=1
     IEND=NPROMA

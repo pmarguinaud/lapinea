@@ -63,9 +63,9 @@ sub addStack
   $dummy_arg_lt->appendChild (&n ("<arg-N><N><n>YDSTACK</n></N></arg-N>"));
 
   my ($use) = &F ('.//use-stmt[last()]', $d);
-  $use->parentNode->insertAfter (&n ("<use-stmt>USE <module-N><N><n>STACK_MOD</n></N></module-N></use-stmt>"), $use);
-  $use->parentNode->insertAfter (&t ("\n"), $use);
   $use->parentNode->insertAfter (&n ("<include>#include &quot;<filename>stack.h</filename>&quot;</include>"), $use);
+  $use->parentNode->insertAfter (&t ("\n"), $use);
+  $use->parentNode->insertAfter (&n ("<use-stmt>USE <module-N><N><n>STACK_MOD</n></N></module-N></use-stmt>"), $use);
   $use->parentNode->insertAfter (&t ("\n"), $use);
 
 
