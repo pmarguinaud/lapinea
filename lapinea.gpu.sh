@@ -33,7 +33,8 @@ do
 #xport PGI_ACC_NOTIFY=1
 
 #nvprof ./compile.$arch/wrap_lapinea.x --case      data.8 --heapsize 4000 --diff 
- nvprof ./compile.$arch/wrap_lapinea.x --case lapinea.2Gb --heapsize 4000 --diff --diff-block-list 1  
+#nvprof ./compile.$arch/wrap_lapinea.x --case lapinea.2Gb --heapsize 4000 --diff --diff-block-list 1  
+ nvprof ./compile.$arch/wrap_lapinea.x --case lapinea.2Gb --heapsize 4000 --times 10
 
  #set +e
  #diff diff.ref.txt diff.$arch.txt
