@@ -19,6 +19,12 @@ TYPE (TRIP), INTENT (IN) :: YD
 
 !$acc update device (YD%CSTOP)
 
+PRINT *, " CSTOP = ", YD%CSTOP
+
+!$acc serial present (YD)
+PRINT *, " CSTOP = ", YD%CSTOP
+!$acc end serial
+
 !$acc update device (YD%NSTADD)
 
 !$acc update device (YD%NSTASS)
@@ -94,6 +100,10 @@ TYPE (TRIP), INTENT (IN) :: YD
 !$acc update device (YD%RCOVSRLU)
 
 !$acc update device (YD%RSIVSRLU)
+
+!$acc serial present (YD)
+PRINT *, " CSTOP = ", YD%CSTOP
+!$acc end serial
 
 END SUBROUTINE
 

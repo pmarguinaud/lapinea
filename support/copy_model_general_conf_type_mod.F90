@@ -21,6 +21,10 @@ CALL COPY (YD%YGFL)
 
 CALL COPY (YD%YRRIP)
 
+!$acc serial present (YD)
+PRINT *, " CSTOP = ", YD%YRRIP%CSTOP
+!$acc end serial
+
 END SUBROUTINE
 
 END MODULE

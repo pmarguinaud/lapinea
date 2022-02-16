@@ -6,13 +6,13 @@
 #SBATCH --time 00:05:00
 #SBATCH --exclusive
 
-module load nvidia-compilers/21.5
+module load nvidia-compilers/21.7
 module load valgrind/3.15.0
 
 set -x
 set -e
 
-cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-vector-stack
+cd /gpfswork/rech/jau/ufh62jk/lapinea/test-character
 
 
 list="gpu"
