@@ -1,3 +1,0 @@
-#FC=nvfortran -mp -byteswapio -Mlarge_arrays -fast -O3
-FC=nvfortran -mp -byteswapio -Mlarge_arrays -g -O0 -DUSE_STACK
-#FC=nvfortran -mp -byteswapio -Mlarge_arrays -g -O0 

@@ -1,0 +1,28 @@
+MODULE COPY_TCCO_MOD
+
+USE INTDYNSL_MOD, ONLY : TCCO
+
+INTERFACE COPY
+MODULE PROCEDURE COPY_TCCO
+END INTERFACE
+
+CONTAINS
+
+SUBROUTINE COPY_TCCO (YD)
+
+IMPLICIT NONE
+TYPE (TCCO), INTENT (IN) :: YD
+
+!$acc update device (YD%M_RLON)
+
+!$acc update device (YD%M_RLAT)
+
+!$acc update device (YD%M_RQX)
+
+!$acc update device (YD%M_RQY)
+
+!$acc update device (YD%NDIM)
+
+END SUBROUTINE
+
+END MODULE

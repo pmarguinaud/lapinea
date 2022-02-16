@@ -8,8 +8,8 @@
 set -x
 set -e
 
-cd /scratch/work/marguina/lapinea/test-character
+cd /scratch/work/marguina/lapinea/test-character-1
 
 
-./compile.gpu/wrap_lapinea.x --case data.8 
+./wrap_lapinea.x --case data.8 
 
