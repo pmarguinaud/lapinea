@@ -22,7 +22,7 @@ CALL COPY (YD%YGFL)
 CALL COPY (YD%YRRIP)
 
 !$acc serial present (YD)
-PRINT *, " CSTOP = ", YD%YRRIP%CSTOP
+PRINT *, " GPU : CSTOP = ", YD%YRRIP%CSTOP, YD%YRRIP%CSTOP == 'h1', YD%YRRIP%CSTOP == 'h2'
 !$acc end serial
 
 END SUBROUTINE

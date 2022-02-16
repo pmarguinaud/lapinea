@@ -19,10 +19,10 @@ TYPE (TRIP), INTENT (IN) :: YD
 
 !$acc update device (YD%CSTOP)
 
-PRINT *, " CSTOP = ", YD%CSTOP
+PRINT *, " CPU : CSTOP = ", YD%CSTOP, YD%CSTOP == 'h1', YD%CSTOP == 'h2'
 
 !$acc serial present (YD)
-PRINT *, " CSTOP = ", YD%CSTOP
+PRINT *, " GPU : CSTOP = ", YD%CSTOP, YD%CSTOP == 'h1', YD%CSTOP == 'h2'
 !$acc end serial
 
 !$acc update device (YD%NSTADD)
@@ -102,7 +102,7 @@ PRINT *, " CSTOP = ", YD%CSTOP
 !$acc update device (YD%RSIVSRLU)
 
 !$acc serial present (YD)
-PRINT *, " CSTOP = ", YD%CSTOP
+PRINT *, " GPU : CSTOP = ", YD%CSTOP, YD%CSTOP == 'h1', YD%CSTOP == 'h2'
 !$acc end serial
 
 END SUBROUTINE
