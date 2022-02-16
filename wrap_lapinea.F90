@@ -119,6 +119,8 @@ ENDIF
 CALL CUDAPROFILERSTOP
 #endif
 
+#ifdef UNDEF
+
 ILUN = 77
 
 #define LOADM(x) CALL O (#x); CALL LOAD_##x (ILUN); CLOSE (ILUN); IDUM
@@ -133,12 +135,16 @@ LOADM (YOMJFH) = 0
 
 #undef LOADM
 
+#endif
+
 #define LOAD(x) CALL O (#x//".IN"); CALL LOAD (ILUN, x); CLOSE (ILUN); IDUM
 
 LOAD (YDGEOMETRY) = 0 
 LOAD (YDML_GCONF) = 0
 LOAD (YDSL) = 0
 LOAD (YDML_DYN) = 0
+
+#ifdef UNDEF
 LOAD (PB1) = 0
 LOAD (PB2) = 0
 LOAD (KVSEPC) = 0
@@ -155,6 +161,8 @@ LOAD (PLSCAWH) = 0
 LOAD (PRSCAWH) = 0
 LOAD (PSCO) = 0
 LOAD (PGFLT1) = 0
+#endif
+
 
 !$acc enter data create (YDGEOMETRY) 
 CALL COPY (YDGEOMETRY) 
