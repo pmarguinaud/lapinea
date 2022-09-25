@@ -1,18 +1,16 @@
 #!/bin/bash
 #SBATCH --export=NONE
-#SBATCH --account=hun@gpu
+#SBATCH -p ndl
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:1
 #SBATCH --time 00:05:00
 #SBATCH --exclusive
 
-module load nvidia-compilers/21.5
-module load valgrind/3.15.0
+module load nvhpc
 
 set -x
 set -e
 
-cd /gpfswork/rech/jau/ufh62jk/lapinea/openacc-vector-stack
+cd /scratch/work/marguina/lapinea/openacc-vector-stack-copy
 
 
 list="gpu"
@@ -33,7 +31,8 @@ do
 #xport PGI_ACC_NOTIFY=1
 
 #nvprof ./compile.$arch/wrap_lapinea.x --case      data.8 --heapsize 4000 --diff 
- nvprof ./compile.$arch/wrap_lapinea.x --case lapinea.2Gb --heapsize 4000 --diff --diff-block-list 1  
+ nvprof ./compile.$arch/wrap_lapinea.x --case      data.8 --heapsize 4000 --diff --diff-block-list 1 --copy 10
+#nvprof ./compile.$arch/wrap_lapinea.x --case lapinea.2Gb --heapsize 4000 --diff --diff-block-list 1  
 
  #set +e
  #diff diff.ref.txt diff.$arch.txt
