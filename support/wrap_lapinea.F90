@@ -46,23 +46,23 @@ TYPE (SL_STRUCT)               :: YDSL
 
 TYPE(STACK) :: YLSTACK
 
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PB1     (:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PB2     (:,:,:)
-INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KVSEPC  (:)
-INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KVSEPL  (:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PCCO    (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PUF     (:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PVF     (:,:,:)
-INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KL0     (:,:,:,:)
-INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KLH0    (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PLSCAW  (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PRSCAW  (:,:,:,:)
-INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KL0H    (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PLSCAWH (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PRSCAWH (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PSCO    (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PGFLT1  (:,:,:,:)
-REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PSTACK  (:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PB1     (:,:)    ,  C_PB1     (:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PB2     (:,:,:)  ,  C_PB2     (:,:,:,:)
+INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KVSEPC  (:)      ,  C_KVSEPC  (:,:)
+INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KVSEPL  (:)      ,  C_KVSEPL  (:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PCCO    (:,:,:,:),  C_PCCO    (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PUF     (:,:,:)  ,  C_PUF     (:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PVF     (:,:,:)  ,  C_PVF     (:,:,:,:)
+INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KL0     (:,:,:,:),  C_KL0     (:,:,:,:,:)
+INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KLH0    (:,:,:,:),  C_KLH0    (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PLSCAW  (:,:,:,:),  C_PLSCAW  (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PRSCAW  (:,:,:,:),  C_PRSCAW  (:,:,:,:,:)
+INTEGER (KIND=JPIM), POINTER, CONTIGUOUS :: KL0H    (:,:,:,:),  C_KL0H    (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PLSCAWH (:,:,:,:),  C_PLSCAWH (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PRSCAWH (:,:,:,:),  C_PRSCAWH (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PSCO    (:,:,:,:),  C_PSCO    (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS :: PGFLT1  (:,:,:,:),  C_PGFLT1  (:,:,:,:,:)
+REAL (KIND=JPRB)   , POINTER, CONTIGUOUS ::                     C_PSTACK  (:,:,:)
 
 #include "lapinea.intfb.h"
 #include "abor1.intfb.h"
@@ -89,7 +89,7 @@ INTEGER :: IST,IEND,IBL,JLON
 
 CHARACTER (LEN=64) :: CLFILE, CLCASE
 LOGICAL :: LLDIFF
-INTEGER :: ICOUNT, NTIMES, ITIME
+INTEGER :: ICOUNT, NTIMES, ITIME, NCOPY, ICOPY
 INTEGER, POINTER :: IDIFFBLOCK (:) => NULL ()
 INTEGER (KIND=8) :: HEAPSIZE
 INTEGER (KIND=4) :: HEAPSIZE4
@@ -104,6 +104,8 @@ CALL GETOPTION ("--diff", LLDIFF)
 CALL GETOPTION ("--diff-block-list", IDIFFBLOCK)
 ICOUNT = 0
 CALL GETOPTION ("--count", ICOUNT)
+NCOPY = 1
+CALL GETOPTION ("--copy", NCOPY)
 HEAPSIZE4 = 0
 CALL GETOPTION ("--heapsize", HEAPSIZE4)
 NTIMES = 1
@@ -156,6 +158,42 @@ LOAD (PRSCAWH) = 0
 LOAD (PSCO) = 0
 LOAD (PGFLT1) = 0
 
+ALLOCATE (C_PB1     (LBOUND (PB1    , 1):UBOUND (PB1    , 1),LBOUND (PB1    , 2):UBOUND (PB1    , 2),                                                                                NCOPY))    
+ALLOCATE (C_PB2     (LBOUND (PB2    , 1):UBOUND (PB2    , 1),LBOUND (PB2    , 2):UBOUND (PB2    , 2),LBOUND (PB2    , 3):UBOUND (PB2    , 3),                                        NCOPY))  
+ALLOCATE (C_KVSEPC  (LBOUND (KVSEPC , 1):UBOUND (KVSEPC , 1),                                                                                                                        NCOPY))      
+ALLOCATE (C_KVSEPL  (LBOUND (KVSEPL , 1):UBOUND (KVSEPL , 1),                                                                                                                        NCOPY))      
+ALLOCATE (C_PCCO    (LBOUND (PCCO   , 1):UBOUND (PCCO   , 1),LBOUND (PCCO   , 2):UBOUND (PCCO   , 2),LBOUND (PCCO   , 3):UBOUND (PCCO   , 3),LBOUND (PCCO   , 4):UBOUND (PCCO   , 4),NCOPY))
+ALLOCATE (C_PUF     (LBOUND (PUF    , 1):UBOUND (PUF    , 1),LBOUND (PUF    , 2):UBOUND (PUF    , 2),LBOUND (PUF    , 3):UBOUND (PUF    , 3),                                        NCOPY))  
+ALLOCATE (C_PVF     (LBOUND (PVF    , 1):UBOUND (PVF    , 1),LBOUND (PVF    , 2):UBOUND (PVF    , 2),LBOUND (PVF    , 3):UBOUND (PVF    , 3),                                        NCOPY))  
+ALLOCATE (C_KL0     (LBOUND (KL0    , 1):UBOUND (KL0    , 1),LBOUND (KL0    , 2):UBOUND (KL0    , 2),LBOUND (KL0    , 3):UBOUND (KL0    , 3),LBOUND (KL0    , 4):UBOUND (KL0    , 4),NCOPY))
+ALLOCATE (C_KLH0    (LBOUND (KLH0   , 1):UBOUND (KLH0   , 1),LBOUND (KLH0   , 2):UBOUND (KLH0   , 2),LBOUND (KLH0   , 3):UBOUND (KLH0   , 3),LBOUND (KLH0   , 4):UBOUND (KLH0   , 4),NCOPY))
+ALLOCATE (C_PLSCAW  (LBOUND (PLSCAW , 1):UBOUND (PLSCAW , 1),LBOUND (PLSCAW , 2):UBOUND (PLSCAW , 2),LBOUND (PLSCAW , 3):UBOUND (PLSCAW , 3),LBOUND (PLSCAW , 4):UBOUND (PLSCAW , 4),NCOPY))
+ALLOCATE (C_PRSCAW  (LBOUND (PRSCAW , 1):UBOUND (PRSCAW , 1),LBOUND (PRSCAW , 2):UBOUND (PRSCAW , 2),LBOUND (PRSCAW , 3):UBOUND (PRSCAW , 3),LBOUND (PRSCAW , 4):UBOUND (PRSCAW , 4),NCOPY))
+ALLOCATE (C_KL0H    (LBOUND (KL0H   , 1):UBOUND (KL0H   , 1),LBOUND (KL0H   , 2):UBOUND (KL0H   , 2),LBOUND (KL0H   , 3):UBOUND (KL0H   , 3),LBOUND (KL0H   , 4):UBOUND (KL0H   , 4),NCOPY))
+ALLOCATE (C_PLSCAWH (LBOUND (PLSCAWH, 1):UBOUND (PLSCAWH, 1),LBOUND (PLSCAWH, 2):UBOUND (PLSCAWH, 2),LBOUND (PLSCAWH, 3):UBOUND (PLSCAWH, 3),LBOUND (PLSCAWH, 4):UBOUND (PLSCAWH, 4),NCOPY))
+ALLOCATE (C_PRSCAWH (LBOUND (PRSCAWH, 1):UBOUND (PRSCAWH, 1),LBOUND (PRSCAWH, 2):UBOUND (PRSCAWH, 2),LBOUND (PRSCAWH, 3):UBOUND (PRSCAWH, 3),LBOUND (PRSCAWH, 4):UBOUND (PRSCAWH, 4),NCOPY))
+ALLOCATE (C_PSCO    (LBOUND (PSCO   , 1):UBOUND (PSCO   , 1),LBOUND (PSCO   , 2):UBOUND (PSCO   , 2),LBOUND (PSCO   , 3):UBOUND (PSCO   , 3),LBOUND (PSCO   , 4):UBOUND (PSCO   , 4),NCOPY))
+ALLOCATE (C_PGFLT1  (LBOUND (PGFLT1 , 1):UBOUND (PGFLT1 , 1),LBOUND (PGFLT1 , 2):UBOUND (PGFLT1 , 2),LBOUND (PGFLT1 , 3):UBOUND (PGFLT1 , 3),LBOUND (PGFLT1 , 4):UBOUND (PGFLT1 , 4),NCOPY))
+
+DO ICOPY = 1, NCOPY
+  C_PB1     (:,:,    ICOPY) = PB1     
+  C_PB2     (:,:,:,  ICOPY) = PB2     
+  C_KVSEPC  (:,      ICOPY) = KVSEPC  
+  C_KVSEPL  (:,      ICOPY) = KVSEPL  
+  C_PCCO    (:,:,:,:,ICOPY) = PCCO    
+  C_PUF     (:,:,:,  ICOPY) = PUF     
+  C_PVF     (:,:,:,  ICOPY) = PVF     
+  C_KL0     (:,:,:,:,ICOPY) = KL0     
+  C_KLH0    (:,:,:,:,ICOPY) = KLH0    
+  C_PLSCAW  (:,:,:,:,ICOPY) = PLSCAW  
+  C_PRSCAW  (:,:,:,:,ICOPY) = PRSCAW  
+  C_KL0H    (:,:,:,:,ICOPY) = KL0H    
+  C_PLSCAWH (:,:,:,:,ICOPY) = PLSCAWH 
+  C_PRSCAWH (:,:,:,:,ICOPY) = PRSCAWH 
+  C_PSCO    (:,:,:,:,ICOPY) = PSCO    
+  C_PGFLT1  (:,:,:,:,ICOPY) = PGFLT1  
+ENDDO
+
 !$acc enter data create (YDGEOMETRY) 
 CALL COPY (YDGEOMETRY) 
 !$acc enter data create (YDML_GCONF) 
@@ -175,7 +213,7 @@ NFLEVG = YDGEOMETRY%YRDIMV%NFLEVG
 
 
 ISTSZ = (40 + YDML_DYN%YYTSCO%NDIM + YDML_DYN%YRDYN%NSLDIMK) * NPROMA * NFLEVG
-ALLOCATE (PSTACK (ISTSZ, NGPBLKS))
+ALLOCATE (C_PSTACK (ISTSZ, NGPBLKS, NCOPY))
 
 #ifdef USE_ACC
 CALL CUDAPROFILERSTART 
@@ -186,17 +224,18 @@ DO ITIME = 1, NTIMES
   TSD = OMP_GET_WTIME ()
 
 !$acc data &
-!$acc & present (YDGEOMETRY, YDML_GCONF, YDSL, YDML_DYN) copyin (PB1, PB2) &
-!$acc & copy (KVSEPC, KVSEPL) &
-!$acc & copyout (PCCO, PUF, PVF, KL0, KLH0, PLSCAW, PRSCAW, KL0H, PLSCAWH, PRSCAWH, PSCO,PGFLT1) &
-!$acc & create  (PSTACK)
+!$acc & present (YDGEOMETRY, YDML_GCONF, YDSL, YDML_DYN) copyin (C_PB1, C_PB2) &
+!$acc & copy (C_KVSEPC, C_KVSEPL) &
+!$acc & copyout (C_PCCO, C_PUF, C_PVF, C_KL0, C_KLH0, C_PLSCAW, C_PRSCAW, C_KL0H, C_PLSCAWH, C_PRSCAWH, C_PSCO, C_PGFLT1) &
+!$acc & create  (C_PSTACK)
 
   TSC = OMP_GET_WTIME ()
 
-  !$acc parallel loop gang private (YLSTACK)
+  !$acc parallel loop gang private (YLSTACK, ICOPY, IEND, IST, IEND) collapse (2)
+  DO ICOPY = 1, NCOPY
   DO IBL = 1, NGPBLKS
 
-    YLSTACK%L = LOC (PSTACK (1, IBL))
+    YLSTACK%L = LOC (C_PSTACK (1, IBL, ICOPY))
     YLSTACK%U = YLSTACK%L + ISTSZ * 8
 
 
@@ -205,15 +244,16 @@ DO ITIME = 1, NTIMES
 
     CALL LAPINEA(&
      ! --- INPUT --------------------------------------------------------------
-     & YDGEOMETRY,YDML_GCONF,YDML_DYN,IST,IEND,YDSL,IBL,PB1,PB2(:,:,IBL),&
+     & YDGEOMETRY,YDML_GCONF,YDML_DYN,IST,IEND,YDSL,IBL,C_PB1(:,:,ICOPY),C_PB2(:,:,IBL,ICOPY),&
      ! --- INPUT/OUTPUT -------------------------------------------------------
-     & KVSEPC(IBL),KVSEPL(IBL),&
+     & C_KVSEPC(IBL,ICOPY),C_KVSEPL(IBL,ICOPY),&
      ! --- OUTPUT -------------------------------------------------------------
-     & PCCO(:,:,:,IBL),PUF(:,:,IBL),PVF(:,:,IBL),&
-     & KL0(:,:,:,IBL),KLH0(:,:,:,IBL),PLSCAW(:,:,:,IBL),PRSCAW(:,:,:,IBL),&
-     & KL0H(:,:,:,IBL),PLSCAWH(:,:,:,IBL),PRSCAWH(:,:,:,IBL),&
-     & PSCO(:,:,:,IBL),PGFLT1(:,:,:,IBL),YLSTACK)
+     & C_PCCO(:,:,:,IBL,ICOPY),C_PUF(:,:,IBL,ICOPY),C_PVF(:,:,IBL,ICOPY),&
+     & C_KL0(:,:,:,IBL,ICOPY),C_KLH0(:,:,:,IBL,ICOPY),C_PLSCAW(:,:,:,IBL,ICOPY),C_PRSCAW(:,:,:,IBL,ICOPY),&
+     & C_KL0H(:,:,:,IBL,ICOPY),C_PLSCAWH(:,:,:,IBL,ICOPY),C_PRSCAWH(:,:,:,IBL,ICOPY),&
+     & C_PSCO(:,:,:,IBL,ICOPY),C_PGFLT1(:,:,:,IBL,ICOPY),YLSTACK)
 
+  ENDDO
   ENDDO
   !$acc end parallel loop
 
@@ -228,9 +268,8 @@ DO ITIME = 1, NTIMES
 
 ENDDO
 
-PRINT *, " ZTD = ", ZTD, ZTD / REAL (NGPBLKS * NPROMA, JPRB)
-PRINT *, " ZTC = ", ZTC, ZTC / REAL (NGPBLKS * NPROMA, JPRB)
-
+PRINT *, " ZTD = ", ZTD, ZTD / REAL (NCOPY * NGPBLKS * NPROMA, JPRB)
+PRINT *, " ZTC = ", ZTC, ZTC / REAL (NCOPY * NGPBLKS * NPROMA, JPRB)
 
 #ifdef USE_ACC
 CALL CUDAPROFILERSTOP
@@ -257,17 +296,19 @@ LOAD (PGFLT1) = 0
 
 PRINT *, " DIFF "
 
+DO ICOPY = 1, NCOPY
 DO IBL = 1, NGPBLKS
 
   IF (ASSOCIATED (IDIFFBLOCK)) THEN
     IF (ALL (IDIFFBLOCK /= IBL)) CYCLE
   ENDIF
 
-  PRINT *, " IBLOCK = ", IBL
+  PRINT *, " ICOPY, IBLOCK = ", ICOPY, IBL
 
-  CALL DIFF ("KVSEPC", KVSEPC_OUT (IBL), KVSEPC (IBL))
-  CALL DIFF ("KVSEPL", KVSEPL_OUT (IBL), KVSEPL (IBL))
-  CALL DIFF ("PCCO", PCCO_OUT (:,:,:,IBL), PCCO (:,:,:,IBL))
+  CALL DIFF ("KVSEPC", KVSEPC_OUT (IBL), C_KVSEPC (IBL,ICOPY))
+  CALL DIFF ("KVSEPL", KVSEPL_OUT (IBL), C_KVSEPL (IBL,ICOPY))
+  CALL DIFF ("PCCO", PCCO_OUT (:,:,:,IBL), C_PCCO (:,:,:,IBL,ICOPY))
+ENDDO
 ENDDO
 
 
