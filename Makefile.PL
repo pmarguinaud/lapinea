@@ -17,6 +17,10 @@ sub slurp
 
 my %deps;
 
+
+my @sys = qw (cudafor omp_lib);
+my %sys = map { ($_, 1) } @sys;
+
 sub deps
 {
   my $f = shift;
@@ -26,7 +30,7 @@ sub deps
       my $code = &slurp ($f);
       my @inc = ($code =~ m/\n\s*#include\s+"(.*?)"/goms);
       my @use = ($code =~ m/\n\s*use\s+(\w+)/gomis);
-      my @mod = grep { $_ ne 'cudafor.o' } map { lc ($_) . '.o' } @use;
+      my @mod = map { $_ . '.o' } grep { ! $sys{$_} } map { lc ($_) } @use;
       $deps{$f} = [@mod, @inc];
    }
 
